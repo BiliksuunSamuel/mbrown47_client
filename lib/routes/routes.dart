@@ -1,5 +1,5 @@
 class Routes {
-  static const String appBaseUrl = "http://192.168.43.230:2031/";
+  static const String appBaseUrl = "http://10.215.0.58:2031/";
   static const String postsGet = "api/posts/get";
   static const String songsGet = "api/songs/get";
   static const String moviesGet = "api/movies/get";

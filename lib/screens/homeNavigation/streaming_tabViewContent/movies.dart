@@ -7,21 +7,19 @@ import 'package:glory/components/movie_group_display.dart';
 import 'package:glory/components/movies_display_carousel.dart';
 import 'package:glory/data/data.dart';
 import 'package:glory/models/movie_model.dart';
-import 'package:glory/routes/routes.dart';
-import 'package:glory/screens/subScreens/movieDescription.dart';
 import 'package:glory/services/controllers/movies_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 
 class Movies extends StatelessWidget {
   final List<MovieModel> movies;
-  const Movies({Key? key, required this.movies}) : super(key: key);
+  UserController userController = UserController(userRepository: Get.find());
+  MoviesController movieController =
+      MoviesController(moviesRepository: Get.find());
+   Movies({Key? key, required this.movies}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<MoviesController>(builder: (movieController) {
-        movieController.getMovies();
-        return ListView(
+    return  ListView(
           physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
           children: [
@@ -31,16 +29,23 @@ class Movies extends StatelessWidget {
                 itemCount: Data.moviesCategories.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return filterMoviesByCategory(movieController.movies, Data.moviesCategories[index]).isNotEmpty? Column(
-                    children: [
-                      ListTitleLabel(text: Data.moviesCategories[index]),
-                      MovieGroupDisplay(data: filterMoviesByCategory(movieController.movies,Data.moviesCategories[index]))
-                    ],
-                  ):const SizedBox(height: 5,);
+                  return filterMoviesByCategory(movieController.movies,
+                              Data.moviesCategories[index])
+                          .isNotEmpty
+                      ? Column(
+                          children: [
+                            ListTitleLabel(text: Data.moviesCategories[index]),
+                            MovieGroupDisplay(
+                                data: filterMoviesByCategory(
+                                    movieController.movies,
+                                    Data.moviesCategories[index]))
+                          ],
+                        )
+                      : const SizedBox(
+                          height: 5,
+                        );
                 })
           ],
         );
-      });
-    });
   }
 }

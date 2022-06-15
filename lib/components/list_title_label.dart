@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ListTitleLabel extends StatelessWidget {
   final String text;
-  const ListTitleLabel({Key? key, required this.text}) : super(key: key);
+   String? trailText = "See All";
+   ListTitleLabel({Key? key, required this.text,this.trailText}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class ListTitleLabel extends StatelessWidget {
       ),
       trailing: TextButton(
         onPressed: () {},
-        child: const Text("See All"),
+        child:trailText != null?Text(trailText.toString()) :const Text("See All"),
       ),
     );
   }

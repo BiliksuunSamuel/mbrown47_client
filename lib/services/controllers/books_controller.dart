@@ -14,6 +14,12 @@ class BooksController extends GetxController {
   late ResponseModel rm = ResponseModel();
   BooksController({required this.booksRepository});
 
+  @override
+  void onInit() {
+    getBooks();
+    super.onInit();
+  }
+
   void getBooks() async {
     try {
       Response response = await booksRepository.getBooks(Routes.booksGet);

@@ -8,34 +8,36 @@ import 'package:glory/screens/subScreens/profile.dart';
 import 'package:glory/services/controllers/story_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 
-
 class PhotoStoryView extends StatelessWidget {
   final StoryModel story;
-  const PhotoStoryView({Key? key,required this.story}) : super(key: key);
+  UserController userController = UserController(userRepository: Get.find());
+  StoryController storyController =
+      StoryController(storyRepository: Get.find());
+   PhotoStoryView({Key? key, required this.story}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<StoryController>(builder: (storyController) {
-        return SizedBox(
+    return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               Align(
-                  alignment: FractionalOffset.center,
-                  child:Container(alignment: Alignment.center,
-                  padding:const EdgeInsets.all(0),
+                alignment: FractionalOffset.center,
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(0),
                   height: context.height,
                   width: context.width,
-                  child:  Image(
-                    fit:BoxFit.contain,
+                  child: Image(
+                    fit: BoxFit.contain,
                     height: context.height,
                     width: context.width,
                     filterQuality: FilterQuality.high,
-                    image: NetworkImage(Routes.appBaseUrl+story.media.first),
-                    ),
-                  ),),
+                    image: NetworkImage(Routes.appBaseUrl + story.media.first),
+                  ),
+                ),
+              ),
               Align(
                   alignment: FractionalOffset.bottomLeft,
                   child: Container(
@@ -199,7 +201,6 @@ class PhotoStoryView extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.only(top: 15.0),
                       ),
-                      
                     ],
                   ),
                 ),
@@ -207,7 +208,5 @@ class PhotoStoryView extends StatelessWidget {
             ],
           ),
         );
-      });
-    });
   }
 }

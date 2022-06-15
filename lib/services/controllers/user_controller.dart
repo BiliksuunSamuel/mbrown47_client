@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/format_userInfo.dart';
@@ -18,7 +16,7 @@ class UserController extends GetxController {
   NewUserInfo info = NewUserInfo();
   bool loading = false;
   bool loggedIn = false;
-  late String error = "";
+  String error = "";
   late String message = "";
   Map<String, String> loginParams = {
     "phone": "",
@@ -27,7 +25,14 @@ class UserController extends GetxController {
 
   UserController({required this.userRepository});
 
+  @override
+  void onInit() {
+    getUsers();
+    super.onInit();
+  }
+
   void handleLogin(dynamic data) async {
+    error = "";
     loading = true;
     update();
     Response response = await userRepository.postData(Routes.userLogin, data);
@@ -37,7 +42,7 @@ class UserController extends GetxController {
       user = UserModel.fromJson(response.body);
       update();
     } else {
-      error = response.statusText.toString();
+      error = response.body;
       loading = false;
       update();
     }

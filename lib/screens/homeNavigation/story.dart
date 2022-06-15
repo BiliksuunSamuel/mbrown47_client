@@ -12,15 +12,17 @@ import 'package:glory/view/video_story_view.dart';
 
 class story extends StatelessWidget {
   final cWidgets _widgets = cWidgets();
+
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => StoryController(storyRepository: Get.find()));
     StoryController(storyRepository: Get.find()).getStories();
-    return DefaultTabController(
-        length: 2,
-        child: GetBuilder<UserController>(builder: (userController) {
-          return GetBuilder<StoryController>(builder: (storyController) {
-            storyController.getStories();
-            return Scaffold(
+    return GetBuilder<UserController>(builder: (userController) {
+      return GetBuilder<StoryController>(builder: (storyController) {
+        storyController.getStories();
+        return DefaultTabController(
+            length: 2,
+            child: Scaffold(
                 backgroundColor: Colors.black,
                 extendBodyBehindAppBar: true,
                 appBar: AppBar(
@@ -42,7 +44,8 @@ class story extends StatelessWidget {
                   elevation: 0.0,
                   leading: _widgets.profileButton(
                       context: context,
-                      profileImageURL:Routes.appBaseUrl+ getProfileImage(userController.user),
+                      profileImageURL: Routes.appBaseUrl +
+                          getProfileImage(userController.user),
                       personalProfile: true),
                   bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(50.0),
@@ -97,68 +100,44 @@ class story extends StatelessWidget {
                           Icons.camera_alt_outlined,
                           color: Colors.white,
                         )),
-                    // IconButton(
-                    //     onPressed: () {},
-                    //     splashColor: Theme.of(context).primaryColor,
-                    //     splashRadius: 20.0,
-                    //     icon: ImageIcon(
-                    //       AssetImage('assets/images/spin_wheel.png'),
-                    //       color: Colors.white,
-                    //     )),
-                    // IconButton(
-                    //     onPressed: () {},
-                    //     splashColor: Theme.of(context).primaryColor,
-                    //     splashRadius: 20.0,
-                    //     icon: ImageIcon(
-                    //       AssetImage('assets/images/cart_bag.png'),
-                    //       color: Colors.white,
-                    //     )),
                   ],
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.only(top: 50.0),
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      PageView.builder(
-                        itemCount: storyController.stories.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return storyController.stories[index].mediaType=="text"?
-                           TextStoryView(story: storyController.stories[index]):
-                           storyController.stories[index].mediaType=="photo"?
-                           PhotoStoryView(story: storyController.stories[index]):
-                           VideoStoryView(
-                              story: storyController.stories[index]
-                            );
-                        },
-                        scrollDirection: Axis.vertical,
-                      ),
-                      PageView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return storyController.stories[index].mediaType=="text"?
-                           TextStoryView(story: storyController.stories[index]):
-                           VideoStoryView(
-                              story: storyController.stories[index]
-                            );
-                        },
-                        itemCount: storyController.stories.length,
-                        scrollDirection: Axis.vertical,
-                      ),
-                    ],
-                  ),
-                )
-                // Stack(
-                //   children: [
-                //     Align(
-                //       alignment: FractionalOffset.center,
-                //       child: PageView.builder(itemBuilder: (BuildContext context, int index){
-                //         return Container();
-                //       }),
-                //     )
-                //   ],
-                // ),
-                );
-          });
-        }));
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        PageView.builder(
+                          itemCount: storyController.stories.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return storyController.stories[index].mediaType ==
+                                    "text"
+                                ? TextStoryView(
+                                    story: storyController.stories[index])
+                                : storyController.stories[index].mediaType ==
+                                        "photo"
+                                    ? PhotoStoryView(
+                                        story: storyController.stories[index])
+                                    : VideoStoryView(
+                                        story: storyController.stories[index]);
+                          },
+                          scrollDirection: Axis.vertical,
+                        ),
+                        PageView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            return storyController.stories[index].mediaType ==
+                                    "text"
+                                ? TextStoryView(
+                                    story: storyController.stories[index])
+                                : VideoStoryView(
+                                    story: storyController.stories[index]);
+                          },
+                          itemCount: storyController.stories.length,
+                          scrollDirection: Axis.vertical,
+                        ),
+                      ],
+                    ))));
+      });
+    });
   }
 }

@@ -12,8 +12,15 @@ class EventsController extends GetxController {
   String error = "";
   bool loading = false;
   List<EventModel> events = [];
+  List<String> cart = [];
   NewEventInfo info = NewEventInfo();
   EventsController({required this.eventRepository});
+
+  @override
+  void onInit() {
+    getEvents();
+    super.onInit();
+  }
 
   void getEvents() async {
     try {
@@ -54,12 +61,9 @@ class EventsController extends GetxController {
   }
 
   //handle delete event
-  void handleDeleteEvent(String eventId,String coverPath) async {
+  void handleDeleteEvent(String eventId, String coverPath) async {
     try {
-      Map<String, dynamic> data = {
-        "id": eventId,
-        "path":coverPath
-      };
+      Map<String, dynamic> data = {"id": eventId, "path": coverPath};
       Response response =
           await eventRepository.addEvent(Routes.deleteEvent, data);
       if (response.statusCode == 200 || response.statusCode == 201) {

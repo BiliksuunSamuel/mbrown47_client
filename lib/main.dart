@@ -20,13 +20,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SongsController(songsRepository: Get.find()).getSongs();
-    BooksController(booksRepository: Get.find()).getBooks();
-    StoryController(storyRepository: Get.find()).getStories();
-    MoviesController(moviesRepository: Get.find()).getMovies();
-    EventsController(eventRepository: Get.find()).getEvents();
-    UserController(userRepository: Get.find()).getUsers();
-
     return GetMaterialApp(
       title: "Glory",
       home: splash(),

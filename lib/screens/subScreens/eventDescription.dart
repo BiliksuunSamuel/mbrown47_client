@@ -244,7 +244,7 @@ class eventDescription extends StatelessWidget {
                         ],
                       ),
                   const Padding(padding: EdgeInsets.only(top: 10.0)),
-                  const ListTitleLabel(text: "Recommended"),
+                   ListTitleLabel(text: "Recommended"),
                   Container(
                     margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                     height: MediaQuery.of(context).size.width / 2.5,

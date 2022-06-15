@@ -286,7 +286,7 @@ class BookDescription extends StatelessWidget {
                           ],
                         ),
                         const Padding(padding: EdgeInsets.only(top: 10.0)),
-                        const ListTitleLabel(text: "Related Books"),
+                         ListTitleLabel(text: "Related Books"),
                         RelatedBooks(books: filterBooksByCategoryAndTag(booksController.books, book.category, book.tag,book.id))
                       ],
                     ),

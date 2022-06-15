@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:glory/data/data.dart';
 import 'package:glory/models/book_model.dart';
+import 'package:glory/models/event_model.dart';
 import 'package:glory/models/movie_model.dart';
 import 'package:glory/models/song_model.dart';
 import 'package:glory/models/user_model.dart';
@@ -49,7 +50,7 @@ int calculateTotalComments(List<dynamic> comments) {
 }
 
 String getProfileImage(UserModel user) {
-  String userImage = user.profileImage;
+  String? userImage = user.profileImage;
   if (userImage.isNotEmpty) {
     return userImage;
   } else {
@@ -98,6 +99,18 @@ List<BookModel> getCartBooks(List<String> cartItems, List<BookModel> books) {
     int index = books.indexWhere((element) => element.id == bookId);
     if (index != -1) {
       cart.add(books[index]);
+    }
+  }
+  return cart;
+}
+
+List<EventModel> getCartEvents(
+    List<String> cartEvents, List<EventModel> events) {
+  List<EventModel> cart = [];
+  for (String eventId in cartEvents) {
+    int index = events.indexWhere((element) => element.id == eventId);
+    if (index != -1) {
+      cart.add(events[index]);
     }
   }
   return cart;

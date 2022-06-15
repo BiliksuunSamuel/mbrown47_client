@@ -9,13 +9,14 @@ import 'package:glory/services/controllers/user_controller.dart';
 
 class SongsCarousel extends StatelessWidget {
   final List<SongModel> songs;
-  const SongsCarousel({Key? key, required this.songs}) : super(key: key);
+    SongsController songsController =
+      SongsController(songsRepository: Get.find());
+  UserController userController = UserController(userRepository: Get.find());
+   SongsCarousel({Key? key, required this.songs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<SongsController>(builder: (songController) {
-        return Container(
+    return Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 2,
           margin: const EdgeInsets.only(top: 10.0),
@@ -49,7 +50,5 @@ class SongsCarousel extends StatelessWidget {
                 : [],
           ),
         );
-      });
-    });
   }
 }

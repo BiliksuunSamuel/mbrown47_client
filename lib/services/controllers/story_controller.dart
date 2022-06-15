@@ -14,15 +14,23 @@ class StoryController extends GetxController {
   String message = "";
   bool loading = false;
 
+  @override
+  void onInit() {
+    getStories();
+    super.onInit();
+  }
+
   void getStories() async {
     try {
       Response response = await storyRepository.getStories(Routes.storiesGet);
       if (response.statusCode == 200 || response.statusCode == 201) {
         stories = formatStories(response.body);
         update();
+      } else {
+        error = response.body;
       }
     } catch (err) {
-      print(err);
+      error = err.toString();
       update();
     }
   }
@@ -34,13 +42,12 @@ class StoryController extends GetxController {
     Response response =
         await storyRepository.addStory(Routes.storyAdd, formatStoryInfo(info));
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print(response.body);
       message = response.body;
       info = NewStoryInfo();
+      getStories();
       update();
     } else {
-      print(response.statusText);
-      error = response.statusText.toString();
+      error = response.body;
       update();
     }
     loading = false;

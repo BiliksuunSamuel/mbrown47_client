@@ -10,7 +10,10 @@ import 'package:glory/services/controllers/user_controller.dart';
 
 class TextStoryView extends StatelessWidget {
   final StoryModel story;
-  const TextStoryView({Key? key, required this.story}) : super(key: key);
+  StoryController storyController =
+      StoryController(storyRepository: Get.find());
+  UserController userController = UserController(userRepository: Get.find());
+  TextStoryView({Key? key, required this.story}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +26,22 @@ class TextStoryView extends StatelessWidget {
             children: [
               Align(
                   alignment: FractionalOffset.center,
-                  child:Container(alignment: Alignment.center,
-                  padding:const EdgeInsets.only(right: 20,left: 5,top: 5,bottom: 5),
-                  margin:const EdgeInsets.only(right: 10,left: 0,bottom: 10,top: 10),
-                  width: context.width*0.8,
-                  child:  Text(
-                    story.message,
-                    textAlign: TextAlign.justify,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(
+                        right: 20, left: 5, top: 5, bottom: 5),
+                    margin: const EdgeInsets.only(
+                        right: 10, left: 0, bottom: 10, top: 10),
+                    width: context.width * 0.8,
+                    child: Text(
+                      story.message,
+                      textAlign: TextAlign.justify,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),)),
+                  )),
               Align(
                   alignment: FractionalOffset.bottomLeft,
                   child: Container(
@@ -57,8 +64,8 @@ class TextStoryView extends StatelessWidget {
                           ),
                           Text(
                             story.message,
-                            maxLines:1,
-                            overflow:TextOverflow.ellipsis,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 12.0),
                           ),
@@ -199,7 +206,6 @@ class TextStoryView extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.only(top: 15.0),
                       ),
-                      
                     ],
                   ),
                 ),

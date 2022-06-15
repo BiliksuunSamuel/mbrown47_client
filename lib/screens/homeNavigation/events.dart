@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/cWidgets.dart';
 import 'package:glory/Utils/utils.dart';
+import 'package:glory/components/list_title_label.dart';
 import 'package:glory/routes/routes.dart';
 import 'package:glory/screens/subScreens/eventDescription.dart';
 import 'package:glory/screens/subScreens/search.dart';
@@ -14,10 +15,10 @@ class events extends StatelessWidget {
   final cWidgets _widgets = cWidgets();
   @override
   Widget build(BuildContext context) {
-    EventsController(eventRepository: Get.find()).getEvents();
     return GetBuilder<UserController>(builder: (userController) {
+      Get.lazyPut(() => EventsController(eventRepository: Get.find()));
+      EventsController(eventRepository: Get.find()).getEvents();
       return GetBuilder<EventsController>(builder: (eventController) {
-        eventController.getEvents();
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
           appBar: AppBar(
@@ -51,7 +52,8 @@ class events extends StatelessWidget {
             elevation: 0.0,
             leading: _widgets.profileButton(
                 context: context,
-                profileImageURL:Routes.appBaseUrl+getProfileImage(userController.user),
+                profileImageURL:
+                    Routes.appBaseUrl + getProfileImage(userController.user),
                 personalProfile: true),
             bottom: const PreferredSize(
               preferredSize: Size.fromHeight(2.0),
@@ -67,7 +69,9 @@ class events extends StatelessWidget {
             actions: [
               _widgets.newEventButton(context: context),
               _widgets.wheelButton(context: context),
-              _widgets.cartButton(context: context,cartSize: eventController.eventsCart.length),
+              _widgets.cartButton(
+                  context: context,
+                  cartSize: eventController.eventsCart.length),
             ],
           ),
           body: ListView(
@@ -96,7 +100,10 @@ class events extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: InkWell(
                           onTap: () {
-                            Get.to(() => eventDescription(event: eventController.events[index],),
+                            Get.to(
+                                () => eventDescription(
+                                      event: eventController.events[index],
+                                    ),
                                 transition: Transition.size);
                           },
                           child: Container(
@@ -157,26 +164,30 @@ class events extends StatelessWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Colors.grey.shade800,
-                                      borderRadius:const BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                           bottomLeft: Radius.circular(20.0),
                                           bottomRight: Radius.circular(20.0)),
                                     ),
                                     child: ListTile(
                                       dense: true,
-                                      title:  Text(
+                                      title: Text(
                                         eventController.events[index].title,
-                                        style:const TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      subtitle:
-                                           Text(eventController.events[index].subtitle,
-                                              style:const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                              overflow: TextOverflow.ellipsis),
-                                      trailing: Text("\$"+eventController.events[index].cost.toString(),
+                                      subtitle: Text(
+                                          eventController
+                                              .events[index].subtitle,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                          overflow: TextOverflow.ellipsis),
+                                      trailing: Text(
+                                          "\$" +
+                                              eventController.events[index].cost
+                                                  .toString(),
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColor,
@@ -191,19 +202,7 @@ class events extends StatelessWidget {
                       );
                     }),
               ),
-              ListTile(
-                title: Text(
-                  "Category",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
-                ),
-                trailing: TextButton(
-                  onPressed: () {},
-                  child: const Text("See All"),
-                ),
-              ),
+              ListTitleLabel(text: "Category"),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 height: MediaQuery.of(context).size.width / 4,
@@ -217,7 +216,9 @@ class events extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: InkWell(
                           onTap: () {
-                            Get.to(() => eventDescription(event:eventController.events[index]),
+                            Get.to(
+                                () => eventDescription(
+                                    event: eventController.events[index]),
                                 transition: Transition.size);
                           },
                           child: Container(
@@ -225,7 +226,8 @@ class events extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               image: DecorationImage(
-                                  image: NetworkImage(Routes.appBaseUrl+eventController.events[index].poster),
+                                  image: NetworkImage(Routes.appBaseUrl +
+                                      eventController.events[index].poster),
                                   fit: BoxFit.cover),
                             ),
                             child: Align(
@@ -236,11 +238,11 @@ class events extends StatelessWidget {
                                 padding: const EdgeInsets.all(5.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade800,
-                                  borderRadius:const BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(20.0),
                                       bottomRight: Radius.circular(20.0)),
                                 ),
-                                child:  Center(
+                                child: Center(
                                     child: Text(
                                   eventController.events[index].title,
                                   overflow: TextOverflow.ellipsis,
@@ -253,19 +255,7 @@ class events extends StatelessWidget {
                       );
                     }),
               ),
-              ListTile(
-                title: Text(
-                  "Upcoming Events",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
-                ),
-                trailing: TextButton(
-                  onPressed: () {},
-                  child: const Text("See All"),
-                ),
-              ),
+               ListTitleLabel(text: "Upcoming Events"),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 height: MediaQuery.of(context).size.width / 2.5,
@@ -279,7 +269,9 @@ class events extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: InkWell(
                           onTap: () {
-                            Get.to(() => eventDescription(event: eventController.events[index]),
+                            Get.to(
+                                () => eventDescription(
+                                    event: eventController.events[index]),
                                 transition: Transition.size);
                           },
                           child: Container(
@@ -287,7 +279,8 @@ class events extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               image: DecorationImage(
-                                  image: NetworkImage(Routes.appBaseUrl+eventController.events[index].poster),
+                                  image: NetworkImage(Routes.appBaseUrl +
+                                      eventController.events[index].poster),
                                   fit: BoxFit.cover),
                             ),
                             child: Align(
@@ -295,15 +288,15 @@ class events extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade800,
-                                  borderRadius:const BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(20.0),
                                       bottomRight: Radius.circular(20.0)),
                                 ),
-                                child:  ListTile(
+                                child: ListTile(
                                   dense: true,
                                   title: Text(
                                     eventController.events[index].title,
-                                    style:const TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                     overflow: TextOverflow.ellipsis,
@@ -311,7 +304,7 @@ class events extends StatelessWidget {
                                   subtitle: Text(
                                     eventController.events[index].subtitle,
                                     overflow: TextOverflow.ellipsis,
-                                    style:const TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -321,19 +314,7 @@ class events extends StatelessWidget {
                       );
                     }),
               ),
-              ListTile(
-                title: Text(
-                  "Nearest City",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
-                ),
-                trailing: TextButton(
-                  onPressed: () {},
-                  child: const Text("See All"),
-                ),
-              ),
+               ListTitleLabel(text: "Nearest City"),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 height: MediaQuery.of(context).size.width / 4,
@@ -347,7 +328,9 @@ class events extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: InkWell(
                           onTap: () {
-                            Get.to(() => eventDescription(event: eventController.events[index]),
+                            Get.to(
+                                () => eventDescription(
+                                    event: eventController.events[index]),
                                 transition: Transition.size);
                           },
                           child: Container(
@@ -355,7 +338,8 @@ class events extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               image: DecorationImage(
-                                  image: NetworkImage(Routes.appBaseUrl+eventController.events[index].poster),
+                                  image: NetworkImage(Routes.appBaseUrl +
+                                      eventController.events[index].poster),
                                   fit: BoxFit.cover),
                             ),
                             child: Align(
@@ -366,15 +350,15 @@ class events extends StatelessWidget {
                                 padding: const EdgeInsets.all(5.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade800,
-                                  borderRadius:const BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(20.0),
                                       bottomRight: Radius.circular(20.0)),
                                 ),
-                                child:  Center(
+                                child: Center(
                                     child: Text(
                                   eventController.events[index].title,
                                   overflow: TextOverflow.ellipsis,
-                                  style:const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 )),
                               ),
                             ),

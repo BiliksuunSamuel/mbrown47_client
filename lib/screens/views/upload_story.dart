@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +17,9 @@ import '../subScreens/search.dart';
 
 class AddStoryScreen extends StatelessWidget {
   const AddStoryScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => UserController(userRepository: Get.find()));
+    Get.lazyPut(() => StoryController(storyRepository: Get.find()));
     return GetBuilder<UserController>(builder: (userController) {
       return GetBuilder<StoryController>(builder: (storyController) {
         return Scaffold(

@@ -11,13 +11,14 @@ import 'package:glory/services/controllers/user_controller.dart';
 
 class PopularPlaylist extends StatelessWidget {
   final List<SongModel> songs;
-  const PopularPlaylist({Key? key, required this.songs}) : super(key: key);
+    SongsController songsController =
+      SongsController(songsRepository: Get.find());
+  UserController userController = UserController(userRepository: Get.find());
+   PopularPlaylist({Key? key, required this.songs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<SongsController>(builder: (songController) {
-        return SizedBox(
+          return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 2,
           child: ListView.builder(
@@ -84,7 +85,5 @@ class PopularPlaylist extends StatelessWidget {
                 );
               }),
         );
-      });
-    });
   }
 }

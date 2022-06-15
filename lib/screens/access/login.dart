@@ -239,6 +239,9 @@ class Login extends StatelessWidget {
                                   "Continue as a Guest",
                                 ),
                               )),
+                          const SizedBox(height: 10,),
+                          Text(userController.error,textAlign: TextAlign.center
+                          ,style:const TextStyle(color:Colors.red,)),
                           const Spacer(
                             flex: 10,
                           ),

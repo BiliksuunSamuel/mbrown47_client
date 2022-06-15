@@ -1,3 +1,4 @@
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/format_movieInfo.dart';
 import 'package:glory/Utils/utils.dart';
@@ -16,7 +17,13 @@ class MoviesController extends GetxController {
   String error = "";
   String message = "";
 
-  Future<void> getMovies() async {
+  @override
+  void onInit() {
+    getMovies();
+    super.onInit();
+  }
+
+  void getMovies() async {
     try {
       Response response = await moviesRepository.getMovies(Routes.moviesGet);
       if (response.statusCode == 200 || response.statusCode == 201) {

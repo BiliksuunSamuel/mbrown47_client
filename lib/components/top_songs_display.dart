@@ -11,13 +11,14 @@ import 'package:glory/services/controllers/user_controller.dart';
 
 class TopSongsDisplay extends StatelessWidget {
   final List<SongModel> songs;
-  const TopSongsDisplay({Key? key, required this.songs}) : super(key: key);
+    SongsController songsController =
+      SongsController(songsRepository: Get.find());
+  UserController userController = UserController(userRepository: Get.find());
+   TopSongsDisplay({Key? key, required this.songs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<SongsController>(builder: (songController) {
-        return ListView.builder(
+    return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: songs.isNotEmpty
@@ -69,7 +70,5 @@ class TopSongsDisplay extends StatelessWidget {
                 ),
               );
             });
-      });
-    });
   }
 }

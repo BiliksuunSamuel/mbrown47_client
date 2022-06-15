@@ -2,8 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:glory/services/controllers/movies_controller.dart';
+import 'package:glory/services/controllers/user_controller.dart';
 
 class videoGames extends StatelessWidget {
+  UserController userController = UserController(userRepository: Get.find());
+  MoviesController movieController =
+      MoviesController(moviesRepository: Get.find());
   final List<String> _dummyAlbum = [
     "https://images.pexels.com/photos/853151/pexels-photo-853151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
     "https://images.unsplash.com/photo-1493612276216-ee3925520721?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=464&q=80",
@@ -17,7 +21,6 @@ class videoGames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MoviesController(moviesRepository: Get.find()).getMovies();
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [

@@ -19,6 +19,12 @@ class SongsController extends GetxController {
   NewMusicInfo file = NewMusicInfo();
   SongsController({required this.songsRepository});
 
+  @override
+  void onInit() {
+    getSongs();
+    super.onInit();
+  }
+
   void uploadSong() async {
     Map<String, dynamic> data = {
       "title": file.title,
@@ -33,17 +39,14 @@ class SongsController extends GetxController {
     };
     resModel.error = "";
 
-    resModel.loading = true;
     Response response =
         await songsRepository.uploadSong(data, Routes.songUpload);
-    resModel.loading = false;
     if (response.statusCode == 200 || response.statusCode == 201) {
       resModel.message = response.body;
-      print(response.body);
+      file = NewMusicInfo();
       update();
     } else {
-      resModel.loading = false;
-      resModel.error = response.statusText.toString();
+      resModel.error = response.body.toString();
       update();
     }
   }

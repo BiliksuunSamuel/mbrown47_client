@@ -26,6 +26,7 @@ class VideoStoryView extends StatefulWidget {
 
 class _VideoStoryViewState extends State<VideoStoryView> {
   final StoryModel story;
+  UserController userController = UserController(userRepository: Get.find());
   final StoryController storyController = StoryController();
   _VideoStoryViewState({required this.story});
 
@@ -58,13 +59,11 @@ class _VideoStoryViewState extends State<VideoStoryView> {
                   controller: storyController,
                   repeat: false,
                   storyItems: [
-                    StoryItem.pageVideo(
-                        Routes.appBaseUrl+story.media.first,
+                    StoryItem.pageVideo(Routes.appBaseUrl + story.media.first,
                         shown: true,
-                        key:Key("story-play-controller-glory"+story.id),
+                        key: Key("story-play-controller-glory" + story.id),
                         imageFit: BoxFit.contain,
                         controller: storyController),
-                    
                   ],
                 )),
             Align(
