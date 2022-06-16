@@ -96,6 +96,7 @@ class BooksController extends GetxController {
         update();
       }
     } catch (err) {
+      print(err);
       rm.error = err.toString();
     }
   }

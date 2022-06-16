@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/utils.dart';
@@ -8,6 +9,7 @@ import 'package:glory/screens/subScreens/storyMusicProfile.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/widgets/story_view.dart';
+import 'package:video_player/video_player.dart';
 
 // class VideoStoryView extends StatelessWidget {
 
@@ -21,13 +23,17 @@ class VideoStoryView extends StatefulWidget {
   const VideoStoryView({Key? key, required this.story}) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<VideoStoryView> createState() => _VideoStoryViewState(story: story);
 }
 
 class _VideoStoryViewState extends State<VideoStoryView> {
-  final StoryModel story;
+  StoryModel story;
+  late VideoPlayerController videoPlayerController;
   UserController userController = UserController(userRepository: Get.find());
-  final StoryController storyController = StoryController();
+  StoryController storyController = StoryController();
+  ////
+  ///
   _VideoStoryViewState({required this.story});
 
   @override
@@ -37,7 +43,14 @@ class _VideoStoryViewState extends State<VideoStoryView> {
   }
 
   @override
-  void initState() {
+  void initState() async {
+    try {
+      videoPlayerController =
+          VideoPlayerController.network(Routes.appBaseUrl + story.media.first);
+      await videoPlayerController.initialize();
+    } catch (error) {
+      print(error);
+    }
     super.initState();
   }
 
@@ -51,21 +64,7 @@ class _VideoStoryViewState extends State<VideoStoryView> {
           children: [
             Align(
                 alignment: FractionalOffset.center,
-                child: StoryView(
-                  progressPosition: ProgressPosition.bottom,
-                  onComplete: () {
-                    print("story completed");
-                  },
-                  controller: storyController,
-                  repeat: false,
-                  storyItems: [
-                    StoryItem.pageVideo(Routes.appBaseUrl + story.media.first,
-                        shown: true,
-                        key: Key("story-play-controller-glory" + story.id),
-                        imageFit: BoxFit.contain,
-                        controller: storyController),
-                  ],
-                )),
+                child: VideoPlayer(videoPlayerController)),
             Align(
                 alignment: FractionalOffset.bottomLeft,
                 child: Container(
