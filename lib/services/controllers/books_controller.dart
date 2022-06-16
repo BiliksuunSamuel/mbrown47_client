@@ -21,6 +21,8 @@ class BooksController extends GetxController {
   }
 
   void getBooks() async {
+    rm.message = "";
+    rm.error = "";
     try {
       Response response = await booksRepository.getBooks(Routes.booksGet);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -31,32 +33,18 @@ class BooksController extends GetxController {
         update();
       }
     } catch (err) {
-      print(err);
       update();
     }
   }
 
   void addBook() async {
     rm.loading = true;
-    FormData bookData = FormData({
-      "author": newBookInfo.author,
-      "title": newBookInfo.title,
-      "tag": newBookInfo.tag,
-      "description": newBookInfo.description,
-      "cost": newBookInfo.cost,
-      "category": newBookInfo.category,
-      "cover": newBookInfo.cover,
-      "userId": newBookInfo.user,
-      "priority": newBookInfo.priority,
-      "paid": newBookInfo.paid,
-      "index": newBookInfo.index
-    });
+    FormData bookData = prepareNewBookInfoData(newBookInfo);
     Response response =
-        await booksRepository.addNewBook(bookData, Routes.booksAdd);
+        await booksRepository.postRequest(bookData, Routes.booksAdd);
     if (response.statusCode == 200 || response.statusCode == 201) {
       rm.message = response.body;
-      rm.loading = false;
-      print(response.body);
+      newBookInfo = NewBookInfo();
       update();
     } else {
       rm.error = response.statusText!;
@@ -80,7 +68,7 @@ class BooksController extends GetxController {
     Map<String, dynamic> data = {"id": bookId, "path": coverPath};
     try {
       Response response =
-          await booksRepository.addNewBook(data, Routes.deleteBook);
+          await booksRepository.postRequest(data, Routes.deleteBook);
       if (response.statusCode == 200 || response.statusCode == 201) {
         rm.message = response.body;
         update();
@@ -92,6 +80,23 @@ class BooksController extends GetxController {
       print(err);
       rm.error = err.toString();
       update();
+    }
+  }
+
+//
+  void updateBookInfo(dynamic data) async {
+    try {
+      Response response =
+          await booksRepository.postRequest(data, Routes.updateBookInfo);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        books = formatBookInfo(response.body);
+        update();
+      } else {
+        rm.error = response.body;
+        update();
+      }
+    } catch (err) {
+      rm.error = err.toString();
     }
   }
 }

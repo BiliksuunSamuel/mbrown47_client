@@ -32,3 +32,16 @@ List<EventModel> filterRecommendedEvent(
   }
   return data;
 }
+
+Map<String, dynamic> prepareEventLikeInfo(EventModel info, String userId) {
+  List<dynamic> likes = info.likes;
+  if (likes.contains(userId)) {
+    likes.remove(userId);
+  } else {
+    likes.add(userId);
+  }
+  return {
+    "id": info.id,
+     "likes":likes,
+  };
+}

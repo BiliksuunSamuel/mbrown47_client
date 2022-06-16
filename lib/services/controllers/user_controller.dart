@@ -88,15 +88,30 @@ class UserController extends GetxController {
     try {
       dynamic userInfo = getStorageItem("user");
       if (userInfo != null) {
-        print(UserModel.fromJson(userInfo).username);
         user = UserModel.fromJson(userInfo);
         update();
       }
     } catch (err) {
-      print(err);
       update();
     }
   }
-  //
 
+  //
+  //
+  void updateUserInfo(dynamic data) async {
+    try {
+      Response response =
+          await userRepository.postData(Routes.updateUserInfo, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        users = formatUsers(response.body);
+        update();
+      } else {
+        error = response.body;
+        update();
+      }
+    } catch (err) {
+      error = err.toString();
+      update();
+    }
+  }
 }

@@ -14,7 +14,7 @@ class EventRepository extends GetxService {
     }
   }
 
-  Future<Response> addEvent(String url, dynamic data) async {
+  Future<Response> postRequest(String url, dynamic data) async {
     try {
       return await apiClient.postRequest(url, data);
     } catch (error) {

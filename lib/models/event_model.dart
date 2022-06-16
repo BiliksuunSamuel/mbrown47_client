@@ -10,6 +10,7 @@ class EventModel {
   late String userId;
   late List<dynamic> registeredUsers;
   late String poster;
+  late List<dynamic> likes;
 
   EventModel.fromJson(dynamic json) {
     id = json["_id"];
@@ -23,5 +24,6 @@ class EventModel {
     userId = json["userId"];
     registeredUsers = json["registeredUsers"] as List<dynamic>;
     poster = json["poster"];
+    likes = json["likes"] as List<dynamic>;
   }
 }

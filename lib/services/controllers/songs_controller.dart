@@ -14,7 +14,8 @@ class SongsController extends GetxController {
   final SongsRepository songsRepository;
   late List<SongModel> songs = [];
   late bool playing = false;
-  late Duration duration = const Duration(minutes: 0, seconds: 0);
+  var songDuration = "0.00 min";
+  var playedTime = "0.00 min";
   ResponseModel resModel = ResponseModel();
   NewMusicInfo file = NewMusicInfo();
   SongsController({required this.songsRepository});
@@ -40,13 +41,15 @@ class SongsController extends GetxController {
     resModel.error = "";
 
     Response response =
-        await songsRepository.uploadSong(data, Routes.songUpload);
+        await songsRepository.postRequest(data, Routes.songUpload);
     if (response.statusCode == 200 || response.statusCode == 201) {
       resModel.message = response.body;
       file = NewMusicInfo();
+      resModel.loading = false;
       update();
     } else {
       resModel.error = response.body.toString();
+      resModel.loading = false;
       update();
     }
   }
@@ -71,8 +74,27 @@ class SongsController extends GetxController {
     update();
   }
 
-  void handleSongDuration(Duration duration) {
+  void handleSongDuration(var duration, var playedTime) {
     duration = duration;
+    playedTime = playedTime;
     update();
+  }
+
+  //
+  void handleSongInfoUpdate(dynamic data) async {
+    try {
+      Response response =
+          await songsRepository.postRequest(data, Routes.updateSongInfo);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        songs = formatSongsInfo(response.body);
+        update();
+      } else {
+        resModel.error = response.body;
+        update();
+      }
+    } catch (error) {
+      resModel.error = error.toString();
+      update();
+    }
   }
 }

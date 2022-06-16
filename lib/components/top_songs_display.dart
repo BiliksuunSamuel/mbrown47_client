@@ -28,7 +28,7 @@ class TopSongsDisplay extends StatelessWidget {
               return ListTile(
                 onTap: () {
                   Get.to(
-                      () => musicPlayer(
+                      () => MusicPlayer(
                             file: songs[index],
                           ),
                       transition: Transition.size);

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/utils.dart';
 import 'package:glory/components/custom_button.dart';
@@ -9,12 +10,24 @@ import 'package:glory/constants/app_colors.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:glory/services/controllers/songs_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
-class AddSongScreen extends StatelessWidget {
+class AddSongScreen extends StatefulWidget {
   const AddSongScreen({Key? key}) : super(key: key);
 
   @override
+  State<AddSongScreen> createState() => _AddSongScreenState();
+}
+
+class _AddSongScreenState extends State<AddSongScreen> {
+  _AddSongScreenState({Key? key});
+  bool loading = false;
+
+  @override
   Widget build(BuildContext context) {
+    if (loading) {
+      context.loaderOverlay.show();
+    }
     return GetBuilder<UserController>(builder: (userController) {
       Get.lazyPut(() => SongsController(songsRepository: Get.find()));
       return GetBuilder<SongsController>(builder: (songController) {
@@ -127,7 +140,15 @@ class AddSongScreen extends StatelessWidget {
                         CustomButton(
                             title: "Submit",
                             elevated: true,
-                            handlePressed: songController.uploadSong),
+                            handlePressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              songController.uploadSong();
+                              setState(() {
+                                loading = songController.resModel.loading;
+                              });
+                            }),
                         Text(
                           songController.resModel.message,
                           textAlign: TextAlign.center,

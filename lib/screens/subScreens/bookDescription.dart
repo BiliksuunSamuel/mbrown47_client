@@ -6,13 +6,18 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:glory/Utils/format_bookInfo.dart';
+import 'package:glory/Utils/format_userInfo.dart';
+import 'package:glory/Utils/utils.dart';
 import 'package:glory/components/custom_button.dart';
 import 'package:glory/components/list_title_label.dart';
 import 'package:glory/components/related_books.dart';
 import 'package:glory/models/book_model.dart';
+import 'package:glory/models/user_model.dart';
 import 'package:glory/routes/routes.dart';
 import 'package:glory/services/controllers/books_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
+import 'package:glory/shared/custom_icon_button.dart';
+import 'package:glory/shared/tag_label_display.dart';
 
 class BookDescription extends StatelessWidget {
   final BookModel book;
@@ -28,6 +33,7 @@ class BookDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
+      UserModel user = getUser(userController.users, userController.user.id);
       return GetBuilder<BooksController>(builder: (booksController) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
@@ -174,6 +180,60 @@ class BookDescription extends StatelessWidget {
                             ),
                           ],
                         ),
+                        Container(
+                            alignment: Alignment.center,
+                            width: context.width,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            margin: const EdgeInsets.symmetric(vertical: 15),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TagLabelDisplay(
+                                      label: "Likes",
+                                      value: book.likes.length.toString()),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  CustomIconButton(
+                                      iconColor: book.likes
+                                              .contains(userController.user.id)
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.black,
+                                      handlePress: () {
+                                        booksController.updateBookInfo(
+                                            prepareBookLikeInfo(
+                                                book, userController.user.id));
+                                      },
+                                      buttonIcon: book.likes
+                                              .contains(userController.user.id)
+                                          ? Icons.thumb_up
+                                          : Icons.thumb_up_alt_outlined),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  book.userId != userController.user.id
+                                      ? CustomIconButton(
+                                          handlePress: () {
+                                            userController.updateUserInfo(
+                                                prepareUserFollowInfo(user,
+                                                    userController.user.id));
+                                          },
+                                          iconColor: user.followers.contains(
+                                                  userController.user.id)
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.black,
+                                          buttonIcon: user.followers.contains(
+                                                  userController.user.id)
+                                              ? Icons.person_pin_circle
+                                              : Icons.person_add)
+                                      : Container(),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                ],
+                              ),
+                            )),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 20.0, bottom: 20.0),
@@ -272,22 +332,42 @@ class BookDescription extends StatelessWidget {
                                   foregroundColor:
                                       MaterialStateProperty.all(Colors.black)),
                             )),
-                        Container(padding:const EdgeInsets.all(20),
-                          child:book.userId==userController.user.id?
-                          CustomButton(title: "Delete Book", elevated: false, handlePressed: (){
-                            booksController.handleDeleteBook(book.id,book.cover);
-                          }):Container()
-                        ),
+                        Container(
+                            padding: const EdgeInsets.all(20),
+                            child: book.userId == userController.user.id
+                                ? CustomButton(
+                                    title: "Delete Book",
+                                    elevated: false,
+                                    handlePressed: () {
+                                      booksController.handleDeleteBook(
+                                          book.id, book.cover);
+                                    })
+                                : Container()),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(booksController.rm.error,textAlign: TextAlign.center,style:const TextStyle(fontSize: 15,color:Colors.red),),
-                            Text(booksController.rm.message,textAlign: TextAlign.center,style:const TextStyle(fontSize: 15,color:Colors.green),)
+                            Text(
+                              booksController.rm.error,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.red),
+                            ),
+                            Text(
+                              booksController.rm.message,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.green),
+                            )
                           ],
                         ),
                         const Padding(padding: EdgeInsets.only(top: 10.0)),
-                         ListTitleLabel(text: "Related Books"),
-                        RelatedBooks(books: filterBooksByCategoryAndTag(booksController.books, book.category, book.tag,book.id))
+                        ListTitleLabel(text: "Related Books"),
+                        RelatedBooks(
+                            books: filterBooksByCategoryAndTag(
+                                booksController.books,
+                                book.category,
+                                book.tag,
+                                book.id))
                       ],
                     ),
                   )

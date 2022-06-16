@@ -1,22 +1,30 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/format_eventInfo.dart';
+import 'package:glory/Utils/format_userInfo.dart';
 import 'package:glory/Utils/utils.dart';
 import 'package:glory/components/custom_button.dart';
 import 'package:glory/components/list_title_label.dart';
 import 'package:glory/models/event_model.dart';
+import 'package:glory/models/user_model.dart';
 import 'package:glory/routes/routes.dart';
 import 'package:glory/services/controllers/event_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
+import 'package:glory/shared/custom_icon_button.dart';
+import 'package:glory/shared/tag_label_display.dart';
 
+// ignore: camel_case_types
 class eventDescription extends StatelessWidget {
   final EventModel event;
-
-  eventDescription({required this.event});
+  const eventDescription({required this.event});
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
+      UserModel user = getUser(userController.users, event.userId);
+
       return GetBuilder<EventsController>(builder: (eventController) {
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
@@ -187,6 +195,56 @@ class eventDescription extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Container(
+                      alignment: Alignment.center,
+                      width: context.width,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      margin: const EdgeInsets.symmetric(vertical: 15),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TagLabelDisplay(label: "Likes", value: event.likes.length.toString()),
+                            const SizedBox(width: 15,),
+                            CustomIconButton(
+                                iconColor:
+                                    event.likes.contains(userController.user.id)
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.black,
+                                handlePress: () {
+                                  eventController.updateEventInfo(
+                                      prepareEventLikeInfo(
+                                          event, userController.user.id));
+                                },
+                                buttonIcon:
+                                    event.likes.contains(userController.user.id)
+                                        ? Icons.thumb_up
+                                        : Icons.thumb_up_alt_outlined),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            event.userId != userController.user.id
+                                ? CustomIconButton(
+                                    handlePress: () {
+                                      userController.updateUserInfo(
+                                          prepareUserFollowInfo(
+                                              user, userController.user.id));
+                                    },
+                                    iconColor: user.followers
+                                            .contains(userController.user.id)
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.black,
+                                    buttonIcon: user.followers
+                                            .contains(userController.user.id)
+                                        ? Icons.person_pin_circle
+                                        : Icons.person_add)
+                                : Container(),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                          ],
+                        ),
+                      )),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 20.0, top: 10.0, bottom: 10.0),
@@ -209,42 +267,48 @@ class eventDescription extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       height: 50.0,
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: eventController.eventsCart.contains(event.id)
-                          ? OutlinedButton(
-                              onPressed: () {
-                                eventController.handleEventCart(event.id);
-                              },
-                              child: const Text(
-                                "Remove",
-                                style: TextStyle(color: Colors.red,),
-                              ))
-                          : ElevatedButton(
-                              onPressed: () {
-                                eventController.handleEventCart(event.id);
-                              },
-                              child: const Text(
-                                "Book Now",
-                              ))),
-
-                      (userController.user.id==event.userId)?
-                       Container(
-                        padding:const EdgeInsets.all(20),
-                        child: CustomButton(
-                      title: "Delete Event",
-                      elevated: false,
-                      handlePressed: () {
-                        eventController.handleDeleteEvent(event.id,event.poster);
-                      }),
-                       ):Container(),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(eventController.message,textAlign: TextAlign.center,style: const TextStyle(color:Colors.green),),
-                          Text(eventController.error,textAlign: TextAlign.center,style: const TextStyle(color:Colors.red,),),
-                        ],
+                      child: CustomButton(
+                        elevated: eventController.cart.contains(event.id)
+                            ? false
+                            : true,
+                        title: eventController.cart.contains(event.id)
+                            ? "Remove From Selected"
+                            : "Book Now",
+                        handlePressed: () {
+                          eventController.handleEventCart(event.id);
+                        },
+                      )),
+                  (userController.user.id == event.userId)
+                      ? Container(
+                          padding: const EdgeInsets.all(20),
+                          child: CustomButton(
+                              title: "Delete Event",
+                              elevated: false,
+                              handlePressed: () {
+                                eventController.handleDeleteEvent(
+                                    event.id, event.poster);
+                              }),
+                        )
+                      : Container(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        eventController.message,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.green),
                       ),
+                      Text(
+                        eventController.error,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                   const Padding(padding: EdgeInsets.only(top: 10.0)),
-                   ListTitleLabel(text: "Recommended"),
+                  ListTitleLabel(text: "Recommended"),
                   Container(
                     margin: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                     height: MediaQuery.of(context).size.width / 2.5,

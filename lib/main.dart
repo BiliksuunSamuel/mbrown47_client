@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:glory/screens/access/splash.dart';
 import 'package:glory/services/controllers/books_controller.dart';
@@ -8,6 +9,7 @@ import 'package:glory/services/controllers/songs_controller.dart';
 import 'package:glory/services/controllers/story_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 import 'package:glory/services/root/root.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +22,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserController(userRepository: Get.find()).getUsers();
     return GetMaterialApp(
       title: "Glory",
-      home: splash(),
+      home: LoaderOverlay(
+        overlayWholeScreen: true,
+          useDefaultLoading: false,
+          overlayColor: Colors.white,
+          overlayOpacity: 0.75,
+          overlayWidget: const SpinKitCircle(
+            color: Colors.green,
+            size: 50,
+          ),
+        child: splash()),
       themeMode: ThemeMode.system,
       darkTheme: ThemeData(
           canvasColor: Colors.grey.shade900,

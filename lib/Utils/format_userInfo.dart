@@ -41,4 +41,16 @@ List<UserModel> formatUsers(List<dynamic> data) {
   return users;
 }
 
+Map<String, dynamic> prepareUserFollowInfo(UserModel info, String userId) {
+  List<dynamic> followers = info.followers;
+  if (followers.contains(userId)) {
+    followers.remove(userId);
+  } else {
+    followers.add(userId);
+  }
 
+  return {
+    "id": info.id,
+    "followers": followers,
+  };
+}

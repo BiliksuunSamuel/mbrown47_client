@@ -30,7 +30,7 @@ class SongsCarousel extends StatelessWidget {
                       builder: (BuildContext context) {
                         return InkWell(
                           onTap: () {
-                            Get.to(() => musicPlayer(file: song),
+                            Get.to(() => MusicPlayer(file: song),
                                 transition: Transition.size);
                           },
                           child: Container(

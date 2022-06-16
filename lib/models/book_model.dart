@@ -16,6 +16,7 @@ class BookModel {
   late int index;
   late int paid;
   late String dateAdded;
+  late List<dynamic> likes;
 
   BookModel.fromJson(dynamic json) {
     cost = double.parse(json["cost"].toString());
@@ -33,5 +34,6 @@ class BookModel {
     index = int.parse(json["index"].toString());
     paid = int.parse(json["paid"].toString());
     priority = json["priority"];
+    likes = json["likes"] as List<dynamic>;
   }
 }

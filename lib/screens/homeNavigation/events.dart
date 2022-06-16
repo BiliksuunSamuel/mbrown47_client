@@ -71,7 +71,7 @@ class events extends StatelessWidget {
               _widgets.wheelButton(context: context),
               _widgets.cartButton(
                   context: context,
-                  cartSize: eventController.eventsCart.length),
+                  cartSize: eventController.cart.length),
             ],
           ),
           body: ListView(

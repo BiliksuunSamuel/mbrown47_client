@@ -7,7 +7,6 @@ import 'package:glory/services/repositories/event_repository.dart';
 
 class EventsController extends GetxController {
   final EventRepository eventRepository;
-  List<String> eventsCart = [];
   String message = "";
   String error = "";
   bool loading = false;
@@ -31,17 +30,17 @@ class EventsController extends GetxController {
         update();
       }
     } catch (err) {
-      print(err);
       update();
     }
   }
 
   void addEvent() async {
-    Response response =
-        await eventRepository.addEvent(Routes.eventAdd, formatEventInfo(info));
+    Response response = await eventRepository.postRequest(
+        Routes.eventAdd, formatEventInfo(info));
     if (response.statusCode == 200 || response.statusCode == 201) {
       message = response.body;
       loading = false;
+      info = NewEventInfo();
       update();
     } else {
       error = response.statusText.toString();
@@ -51,11 +50,11 @@ class EventsController extends GetxController {
   }
 
   void handleEventCart(String eventId) {
-    if (eventsCart.contains(eventId)) {
-      eventsCart.remove(eventId);
+    if (cart.contains(eventId)) {
+      cart.remove(eventId);
       update();
     } else {
-      eventsCart.add(eventId);
+      cart.add(eventId);
       update();
     }
   }
@@ -65,7 +64,7 @@ class EventsController extends GetxController {
     try {
       Map<String, dynamic> data = {"id": eventId, "path": coverPath};
       Response response =
-          await eventRepository.addEvent(Routes.deleteEvent, data);
+          await eventRepository.postRequest(Routes.deleteEvent, data);
       if (response.statusCode == 200 || response.statusCode == 201) {
         message = response.body;
         update();
@@ -73,7 +72,20 @@ class EventsController extends GetxController {
         error = response.statusText.toString();
       }
     } catch (err) {
-      print(err);
+      update();
+    }
+  }
+
+  void updateEventInfo(dynamic data) async {
+    try {
+      Response response =
+          await eventRepository.postRequest(Routes.eventUpdate, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        events = formatEvents(response.body);
+        update();
+      }
+    } catch (err) {
+      error = err.toString();
       update();
     }
   }

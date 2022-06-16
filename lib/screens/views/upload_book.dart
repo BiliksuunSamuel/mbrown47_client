@@ -172,18 +172,15 @@ class UploadBookScreen extends StatelessWidget {
                         bookController.addBook();
                       },
               ),
-              bookController.rm.error.isNotEmpty
-                  ? ResponseLabel(
+               ResponseLabel(
                       text: bookController.rm.error,
                       isError: true,
-                    )
-                  : Container(),
-              bookController.rm.message.isNotEmpty
-                  ? ResponseLabel(
+                    ),
+                  ResponseLabel(
                       text: bookController.rm.message,
                       isError: false,
                     )
-                  : Container(),
+
             ]),
           )),
         );

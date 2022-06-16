@@ -13,7 +13,7 @@ class BooksRepository extends GetxService {
     }
   }
 
-  Future<Response> addNewBook(dynamic data, String url) async {
+  Future<Response> postRequest(dynamic data, String url) async {
     try {
       return await apiClient.postRequest(url, data);
     } catch (error) {

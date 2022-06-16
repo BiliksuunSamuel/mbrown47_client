@@ -19,7 +19,7 @@ class PopularBooks extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 1.5,
           child: ListView.builder(
-              itemCount: books.length > 1 ? books.length - 1 : 0,
+              itemCount: books.length,
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {

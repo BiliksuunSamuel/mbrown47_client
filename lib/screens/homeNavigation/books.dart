@@ -22,8 +22,9 @@ class books extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
       Get.lazyPut(() => BooksController(booksRepository: Get.find()));
-      BooksController(booksRepository: Get.find()).getBooks();
+      userController.getUsers();
       return GetBuilder<BooksController>(builder: (booksController) {
+        booksController.getBooks();
         return Scaffold(
           backgroundColor: Theme.of(context).backgroundColor,
           appBar: AppBar(
@@ -83,17 +84,17 @@ class books extends StatelessWidget {
             shrinkWrap: true,
             children: [
               const Padding(padding: EdgeInsets.only(top: 10.0)),
-               ListTitleLabel(text: "Popular Books"),
+              ListTitleLabel(text: "Popular Books"),
               PopularBooks(books: filterPopularBooks(booksController.books)),
               const Padding(padding: EdgeInsets.only(top: 10.0)),
-               ListTitleLabel(text: "Daily Recommended"),
+              ListTitleLabel(text: "Daily Recommended"),
               const Padding(padding: EdgeInsets.only(top: 10.0)),
               RecommendedBooks(books: booksController.books),
               const Padding(padding: EdgeInsets.only(top: 10.0)),
-               ListTitleLabel(text: "Top Free"),
+              ListTitleLabel(text: "Top Free"),
               FreeBooksDisplay(books: filterFreeBooks(booksController.books)),
               const Padding(padding: EdgeInsets.only(top: 10.0)),
-               ListTitleLabel(text: "Newest"),
+              ListTitleLabel(text: "Newest"),
               NewBooks(books: filterNewBooks(booksController.books)),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
             ],

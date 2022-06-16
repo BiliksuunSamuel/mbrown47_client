@@ -31,7 +31,7 @@ class MusicAbulmGroup extends StatelessWidget {
                 return InkWell(
                     onTap: () {
                       Get.to(
-                          () => musicPlayer(
+                          () => MusicPlayer(
                                 file: songs[index],
                               ),
                           transition: Transition.size);
