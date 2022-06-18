@@ -5,11 +5,11 @@ class StoryRepository extends GetxService {
   final ApiClient apiClient;
   StoryRepository({required this.apiClient});
 
-  Future<Response> getStories(String url) async {
+  Future<Response> getRequest(String url) async {
     return await apiClient.getRequest(url);
   }
 
-  Future<Response> addStory(String url, dynamic data) async {
+  Future<Response> postRequest(String url, dynamic data) async {
     return apiClient.postRequest(url, data);
   }
 

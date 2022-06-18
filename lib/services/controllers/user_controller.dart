@@ -9,6 +9,7 @@ import 'package:glory/services/repositories/user_repository.dart';
 import 'package:glory/storage/storage.dart';
 
 class UserController extends GetxController {
+  final localStorage = LocalStorage();
   final UserRepository userRepository;
   late PlatformFile profileFile;
   late UserModel user = UserModel.fromJson(Data.initialUserInfo);
@@ -38,7 +39,7 @@ class UserController extends GetxController {
     Response response = await userRepository.postData(Routes.userLogin, data);
     if (response.statusCode == 200 || response.statusCode == 201) {
       loading = false;
-      handleAddItemToStorage(response.body, "user");
+      localStorage.insertItem("user", response.body);
       user = UserModel.fromJson(response.body);
       update();
     } else {
@@ -56,7 +57,7 @@ class UserController extends GetxController {
         user = UserModel.fromJson(response.body);
         update();
       } else {
-        error = response.statusText.toString();
+        error = response.body.toString();
         update();
       }
     } catch (err) {
@@ -84,9 +85,9 @@ class UserController extends GetxController {
   }
   //
 
-  void checkUserInfo() {
+  void checkUserInfo() async {
     try {
-      dynamic userInfo = getStorageItem("user");
+      dynamic userInfo = localStorage.getItem("user");
       if (userInfo != null) {
         user = UserModel.fromJson(userInfo);
         update();
@@ -98,12 +99,54 @@ class UserController extends GetxController {
 
   //
   //
+
   void updateUserInfo(dynamic data) async {
     try {
       Response response =
           await userRepository.postData(Routes.updateUserInfo, data);
       if (response.statusCode == 200 || response.statusCode == 201) {
         users = formatUsers(response.body);
+        update();
+      } else {
+        error = response.body;
+        update();
+      }
+    } catch (err) {
+      error = err.toString();
+      update();
+    }
+  }
+
+  //
+  void phoneVerify(dynamic data) async {
+    error = "";
+    update();
+    try {
+      Response response =
+          await userRepository.postData(Routes.phoneVerify, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        user.phone = response.body["phone"];
+        user.id = response.body["id"];
+        user.authId = response.body["authId"];
+        update();
+      } else {
+        error = response.body;
+      }
+    } catch (err) {
+      error = err.toString();
+      update();
+    }
+  }
+
+  void changePassword(dynamic data) async {
+    error = "";
+    message = "";
+    update();
+    try {
+      Response response =
+          await userRepository.postData(Routes.changePassword, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        message = response.body;
         update();
       } else {
         error = response.body;

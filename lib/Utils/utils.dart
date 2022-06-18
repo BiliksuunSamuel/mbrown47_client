@@ -123,3 +123,20 @@ double getCartCost(List<BookModel> cartItems) {
   }
   return cost;
 }
+
+double getCartEventsCost(List<EventModel> events) {
+  double cost = 0;
+  for (EventModel event in events) {
+    cost = event.cost + cost;
+  }
+  return cost;
+}
+
+UserModel getUserById(List<UserModel> users, String userId) {
+  UserModel user = users.where((element) => element.id == userId).first;
+  if (user != null) {
+    return user;
+  } else {
+    return UserModel.fromJson(Data.initialUserInfo);
+  }
+}

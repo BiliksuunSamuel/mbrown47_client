@@ -1,5 +1,6 @@
-
+import 'package:glory/data/params/new_story_comment_info.dart';
 import 'package:glory/data/params/new_story_info.dart';
+import 'package:glory/models/story_comment_model.dart';
 import 'package:glory/models/story_model.dart';
 
 Map<String, dynamic> formatStoryInfo(NewStoryInfo info) {
@@ -8,7 +9,7 @@ Map<String, dynamic> formatStoryInfo(NewStoryInfo info) {
     "message": info.message,
     "media": info.media,
     "userId": info.userId,
-    "mediaType":info.mediaType,
+    "mediaType": info.mediaType,
   };
   return data;
 }
@@ -41,4 +42,45 @@ List<StoryModel> formatStories(List<dynamic> data) {
     stories.add(StoryModel.fromJson(json));
   }
   return stories;
+}
+
+dynamic prepareCommentInfo(NewStoryCommentInfo info) {
+  return {
+    "userId": info.userId,
+    "comment": info.comment,
+    "dateAdded": info.dateAdded,
+    "storyId": info.storyId,
+    "likes": info.likes,
+    "replies": info.replies,
+    "id": info.id,
+  };
+}
+
+dynamic prepareStoryCommentLikeInfo(
+    StoryModel model, String userId, StoryCommentModel comment) {
+  List<StoryCommentModel> comments = model.comments;
+  List<StoryCommentModel> data = [];
+
+  for (StoryCommentModel mod in comments) {
+    if (mod.id == comment.id) {
+      if (mod.likes.contains(userId)) {
+        mod.likes.remove(userId);
+        data.add(mod);
+      } else {
+        mod.likes.add(userId);
+        data.add(mod);
+
+      }
+    } else {
+      data.add(mod);
+    }
+  }
+  return {
+    "id": model.id,
+    "comments": data,
+  };
+}
+
+StoryModel getStoryById(List<StoryModel> stories, String id) {
+  return stories.where((element) => element.id == id).first;
 }

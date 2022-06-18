@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:glory/screens/access/newPassword.dart';
+import 'package:glory/components/custom_button.dart';
+import 'package:glory/components/response_label.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 
-class forgotPassword extends StatelessWidget {
+class NewPasswordScreen extends StatelessWidget {
+  const NewPasswordScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
     Get.lazyPut(() => UserController(userRepository: Get.find()));
-      if (userController.user.id.isNotEmpty) {
-        Get.to(()=>const NewPasswordScreen());
-      }
       return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -37,70 +37,67 @@ class forgotPassword extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Forgot Password?",
+              Text("Enter Your New Password",
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(
                       fontSize: 18.0,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold)),
-              const Padding(padding: EdgeInsets.only(top: 10.0)),
-              Text(
-                "Enter your phone number below to receive your password reset instruction.",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    ?.copyWith(fontSize: 14.0),
-              ),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
               TextField(
+                obscureText: true,
                 style: TextStyle(color: Theme.of(context).primaryColor),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 onChanged: (text) {
                   userController.user.phone = text;
                 },
                 decoration: InputDecoration(
-                  label: Text("Phone Number",
+                  label: Text("New Password",
                       style: Theme.of(context).textTheme.bodyText1),
                   prefixIcon: Icon(
-                    Icons.phone_iphone_outlined,
+                    Icons.key_outlined,
+                    color: Theme.of(context).textTheme.bodyText1?.color,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              TextField(
+                obscureText: true,
+                style: TextStyle(color: Theme.of(context).primaryColor),
+                keyboardType: TextInputType.visiblePassword,
+                onChanged: (text) {
+                  userController.user.email = text;
+                },
+                decoration: InputDecoration(
+                  label: Text("Confirm Password",
+                      style: Theme.of(context).textTheme.bodyText1),
+                  prefixIcon: Icon(
+                    Icons.key_outlined,
                     color: Theme.of(context).textTheme.bodyText1?.color,
                   ),
                 ),
               ),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40.0,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      userController
-                          .phoneVerify({"phone": userController.user.phone});
-                      userController.user.phone = "";
-                    },
-                    child: const Text(
-                      "Reset Password",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.yellow.shade700),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.black),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(10.0)))),
-                  )),
+              CustomButton(
+                  title: "Submit",
+                  elevated: true,
+                  handlePressed: () {
+                    userController.changePassword({
+                      "password": userController.user.phone,
+                      "confirm_password": userController.user.email,
+                      "authId": userController.user.authId
+                    });
+                  }),
               const SizedBox(
                 height: 15,
               ),
-              userController.error.isNotEmpty
-                  ? Text(
-                      userController.error,
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
-                      textAlign: TextAlign.center,
-                    )
+              userController.message.isNotEmpty
+                  ? ResponseLabel(text: userController.message, isError: false)
                   : Container(),
+              userController.error.isNotEmpty
+                  ? ResponseLabel(text: userController.error, isError: true)
+                  : Container()
             ],
           ),
         ),

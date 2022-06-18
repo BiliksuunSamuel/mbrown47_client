@@ -12,14 +12,15 @@ import 'package:glory/services/controllers/user_controller.dart';
 
 class Movies extends StatelessWidget {
   final List<MovieModel> movies;
-  UserController userController = UserController(userRepository: Get.find());
-  MoviesController movieController =
-      MoviesController(moviesRepository: Get.find());
-   Movies({Key? key, required this.movies}) : super(key: key);
+  Movies({Key? key, required this.movies}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  ListView(
+    return GetBuilder<UserController>(builder: (userController) {
+      Get.lazyPut(() => UserController(userRepository: Get.find()));
+      return GetBuilder<MoviesController>(builder: (movieController) {
+        Get.lazyPut(() => MoviesController(moviesRepository: Get.find()));
+        return ListView(
           physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
           children: [
@@ -47,5 +48,7 @@ class Movies extends StatelessWidget {
                 })
           ],
         );
+      });
+    });
   }
 }

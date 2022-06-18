@@ -147,10 +147,10 @@ class AddStoryScreen extends StatelessWidget {
                       const SizedBox(
                         height: 10,
                       ),
-                      Text(storyController.error,
-                          style: const TextStyle(color: Colors.red)),
-                      Text(storyController.message,
-                          style: const TextStyle(color: Colors.green)),
+                      storyController.error!=null? Text(storyController.error,
+                          style: const TextStyle(color: Colors.red)):Container(),
+                      storyController.message!=null? Text(storyController.message,
+                          style: const TextStyle(color: Colors.green)):Container(),
                     ]))));
       });
     });

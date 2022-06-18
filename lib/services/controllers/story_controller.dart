@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:glory/Utils/format_storyInfo.dart';
+import 'package:glory/data/params/new_story_comment_info.dart';
 import 'package:glory/data/params/new_story_info.dart';
 import 'package:glory/models/story_model.dart';
 import 'package:glory/routes/routes.dart';
@@ -8,6 +9,7 @@ import 'package:glory/services/repositories/story_repository.dart';
 class StoryController extends GetxController {
   final StoryRepository storyRepository;
   StoryController({required this.storyRepository});
+  NewStoryCommentInfo commentInfo = NewStoryCommentInfo();
   List<StoryModel> stories = [];
   NewStoryInfo info = NewStoryInfo();
   String error = "";
@@ -22,7 +24,7 @@ class StoryController extends GetxController {
 
   void getStories() async {
     try {
-      Response response = await storyRepository.getStories(Routes.storiesGet);
+      Response response = await storyRepository.getRequest(Routes.storiesGet);
       if (response.statusCode == 200 || response.statusCode == 201) {
         stories = formatStories(response.body);
         update();
@@ -39,8 +41,8 @@ class StoryController extends GetxController {
     loading = true;
     message = "";
     error = "";
-    Response response =
-        await storyRepository.addStory(Routes.storyAdd, formatStoryInfo(info));
+    Response response = await storyRepository.postRequest(
+        Routes.storyAdd, formatStoryInfo(info));
     if (response.statusCode == 200 || response.statusCode == 201) {
       message = response.body;
       info = NewStoryInfo();
@@ -54,9 +56,8 @@ class StoryController extends GetxController {
   }
 
   void updateStoryInfo(Map<String, dynamic> data) async {
-    Map<String, dynamic> info = {"_id": "7704", "userId": "7704"};
     Response response =
-        await storyRepository.updateStoryInfo(Routes.storyUpdate, data);
+        await storyRepository.postRequest(Routes.storyUpdate, data);
     if (response.statusCode == 200 || response.statusCode == 201) {
       stories = response.body;
     }
@@ -65,5 +66,23 @@ class StoryController extends GetxController {
   void handleNewStoryInfo(NewStoryInfo data) {
     info = data;
     update();
+  }
+
+  void addComment() async {
+    try {
+      Response response = await storyRepository.postRequest(
+          Routes.storyReply, prepareCommentInfo(commentInfo));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        stories = formatStories(response.body["data"]);
+        message = response.body["message"];
+        update();
+      } else {
+        error = response.body;
+        update();
+      }
+    } catch (err) {
+      error = err.toString();
+      update();
+    }
   }
 }

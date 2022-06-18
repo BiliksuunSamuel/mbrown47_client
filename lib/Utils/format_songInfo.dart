@@ -23,3 +23,16 @@ List<SongModel> getRelatedSongs(List<SongModel> songs, String songId) {
   }
   return musics;
 }
+
+Map<String, dynamic> prepareSongWishListInfo(SongModel info, String userId) {
+  List<dynamic> wishlist = info.wishlist;
+  if (wishlist.contains(userId)) {
+    wishlist.remove(userId);
+  } else {
+    wishlist.add(userId);
+  }
+  return {
+    "id": info.id,
+    "wishlist": wishlist,
+  };
+}

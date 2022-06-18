@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:glory/screens/homeNavigation/navigation.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 
 import 'login.dart';
@@ -11,6 +12,9 @@ class welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserController>(builder: (userController) {
+      if (userController.user.username.isNotEmpty) {
+        navigation();
+      }
       return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         extendBodyBehindAppBar: true,

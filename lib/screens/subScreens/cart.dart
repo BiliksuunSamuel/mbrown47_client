@@ -96,9 +96,9 @@ class cart extends StatelessWidget {
                       ListTitleLabel(
                         text: "Total",
                         trailText: "\$" +
-                            getCartCost(getCartBooks(bookController.booksCart,
-                                    bookController.books))
-                                .toString(),
+                           ( getCartCost(getCartBooks(bookController.booksCart,
+                                    bookController.books))+getCartEventsCost(getCartEvents(eventsController.cart, eventsController.events))
+                           ).toString(),
                       ),
                       Container(
                         padding: const EdgeInsets.all(15),

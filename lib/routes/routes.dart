@@ -26,4 +26,7 @@ class Routes {
   static const String updateUserInfo = "api/user/update";
   static const String updateBookInfo = "api/book/update";
   static const String updateSongInfo = "api/song/update";
+  static const String phoneVerify = "api/phone/verify";
+  static const String changePassword = "api/password/change";
+  static const String storyReply = "api/story/reply";
 }

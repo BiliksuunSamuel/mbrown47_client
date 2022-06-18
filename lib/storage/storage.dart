@@ -1,13 +1,16 @@
-import 'package:localstorage/localstorage.dart';
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
 
-void handleAddItemToStorage(dynamic userInfo,dynamic key)  {
-  LocalStorage storage = LocalStorage(key);
-     storage.setItem(key, userInfo);
-  
+
+
+class LocalStorage{
+  final storage=const FlutterSecureStorage();
+
+  void insertItem(String key,dynamic value)async{
+    await storage.write(key: key, value: value);
+  }
+
+  dynamic getItem(String key)async{
+    return await storage.read(key: key);
+  }
 }
 
-dynamic getStorageItem(dynamic key)  {
-  LocalStorage storage = LocalStorage(key);
-    return  storage.getItem(key);
-
-}

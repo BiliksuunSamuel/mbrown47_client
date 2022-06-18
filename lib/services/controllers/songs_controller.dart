@@ -93,7 +93,6 @@ class SongsController extends GetxController {
         update();
       }
     } catch (error) {
-      print(error);
       resModel.error = error.toString();
       update();
     }

@@ -203,15 +203,24 @@ class _MusicPlayerState extends State<MusicPlayer> {
                                               ?.copyWith(fontSize: 12.0),
                                         ),
                                         trailing: IconButton(
-                                          icon: Icon(Icons.favorite_outline,
-                                              color: Theme.of(context)
+                                          icon: Icon(
+                                            file.wishlist.contains(
+                                            userController.user.id)?Icons.favorite:Icons.favorite_outline,
+                                              color:file.wishlist.contains(userController.user.id)?Colors.red: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
                                                   ?.color),
                                           splashColor:
                                               Theme.of(context).primaryColor,
                                           splashRadius: 20.0,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            songsController
+                                                .handleSongInfoUpdate(
+                                                    prepareSongWishListInfo(
+                                                        file,
+                                                        userController
+                                                            .user.id));
+                                          },
                                         )),
                                     Container(
                                       margin: const EdgeInsets.only(

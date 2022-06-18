@@ -5,16 +5,20 @@ import 'package:glory/Utils/cWidgets.dart';
 import 'package:glory/Utils/utils.dart';
 import 'package:glory/components/photo_story.dart';
 import 'package:glory/components/text_story_view.dart';
+import 'package:glory/models/story_model.dart';
 import 'package:glory/routes/routes.dart';
 import 'package:glory/services/controllers/story_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 import 'package:glory/view/video_story_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class story extends StatelessWidget {
   final cWidgets _widgets = cWidgets();
+  late BuildContext context;
 
   @override
   Widget build(BuildContext context) {
+    context = context;
     Get.lazyPut(() => StoryController(storyRepository: Get.find()));
     StoryController(storyRepository: Get.find()).getStories();
     return GetBuilder<UserController>(builder: (userController) {
@@ -110,27 +114,29 @@ class story extends StatelessWidget {
                         PageView.builder(
                           itemCount: storyController.stories.length,
                           itemBuilder: (BuildContext context, int index) {
+                             StoryModel story = storyController.stories[index];
                             return storyController.stories[index].mediaType ==
                                     "text"
                                 ? TextStoryView(
-                                    story: storyController.stories[index])
+                                    story:story)
                                 : storyController.stories[index].mediaType ==
                                         "photo"
                                     ? PhotoStoryView(
-                                        story: storyController.stories[index])
+                                        story: story)
                                     : VideoStoryView(
-                                        story: storyController.stories[index]);
+                                        story:story);
                           },
                           scrollDirection: Axis.vertical,
                         ),
                         PageView.builder(
                           itemBuilder: (BuildContext context, int index) {
-                            return storyController.stories[index].mediaType ==
+                            StoryModel story = storyController.stories[index];
+                            return story.mediaType ==
                                     "text"
                                 ? TextStoryView(
-                                    story: storyController.stories[index])
+                                    story: story)
                                 : VideoStoryView(
-                                    story: storyController.stories[index]);
+                                    story: story);
                           },
                           itemCount: storyController.stories.length,
                           scrollDirection: Axis.vertical,
