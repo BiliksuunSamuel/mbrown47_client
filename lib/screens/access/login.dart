@@ -19,8 +19,7 @@ class Login extends StatelessWidget {
         return navigation();
       }
       if (userController.loading) {
-         context.loaderOverlay.show();
-
+        context.loaderOverlay.show();
       }
       return LoaderOverlay(
           useDefaultLoading: false,
@@ -184,13 +183,11 @@ class Login extends StatelessWidget {
                               width: MediaQuery.of(context).size.width,
                               height: 40.0,
                               child: ElevatedButton(
-                                onPressed: userController.loading
-                                    ? null
-                                    : () {
-                                        userController.handleLogin(
-                                            userController.loginParams);
-                                        // Get.off(() => navigation())
-                                      },
+                                onPressed: () {
+                                  userController
+                                      .handleLogin(userController.loginParams);
+                                  // Get.off(() => navigation())
+                                },
                                 child: const Text("Sign In"),
                                 style: ButtonStyle(
                                     shape: MaterialStateProperty.all<
@@ -226,22 +223,18 @@ class Login extends StatelessWidget {
                                   color: Colors.black,
                                 ),
                               )),
-                          // Padding(padding: const EdgeInsets.only(top: 15.0)),
-                          const Spacer(
-                            flex: 1,
+                          const SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: 40.0,
-                              child: OutlinedButton(
-                                onPressed: () => Get.off(() => navigation()),
-                                child: const Text(
-                                  "Continue as a Guest",
-                                ),
-                              )),
-                          const SizedBox(height: 10,),
-                          Text(userController.error,textAlign: TextAlign.center
-                          ,style:const TextStyle(color:Colors.red,)),
+                          GetBuilder<UserController>(builder: (userController) {
+                            return userController.error.isNotEmpty
+                                ? Text(userController.error,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                    ))
+                                : Container();
+                          }),
                           const Spacer(
                             flex: 10,
                           ),

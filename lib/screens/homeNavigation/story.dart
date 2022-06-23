@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/cWidgets.dart';
-import 'package:glory/Utils/utils.dart';
+import 'package:glory/Utils/format_storyInfo.dart';
 import 'package:glory/components/photo_story.dart';
 import 'package:glory/components/text_story_view.dart';
 import 'package:glory/models/story_model.dart';
-import 'package:glory/routes/routes.dart';
 import 'package:glory/services/controllers/story_controller.dart';
 import 'package:glory/services/controllers/user_controller.dart';
 import 'package:glory/view/video_story_view.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class story extends StatelessWidget {
   final cWidgets _widgets = cWidgets();
@@ -22,6 +20,7 @@ class story extends StatelessWidget {
     Get.lazyPut(() => StoryController(storyRepository: Get.find()));
     StoryController(storyRepository: Get.find()).getStories();
     return GetBuilder<UserController>(builder: (userController) {
+      userController.getUsers();
       return GetBuilder<StoryController>(builder: (storyController) {
         storyController.getStories();
         return DefaultTabController(
@@ -48,8 +47,7 @@ class story extends StatelessWidget {
                   elevation: 0.0,
                   leading: _widgets.profileButton(
                       context: context,
-                      profileImageURL: Routes.appBaseUrl +
-                          getProfileImage(userController.user),
+                      user: userController.user,
                       personalProfile: true),
                   bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(50.0),
@@ -112,33 +110,55 @@ class story extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         PageView.builder(
-                          itemCount: storyController.stories.length,
+                          itemCount: getOtherStories(storyController.stories,
+                                  userController.user.id)
+                              .length,
                           itemBuilder: (BuildContext context, int index) {
-                             StoryModel story = storyController.stories[index];
-                            return storyController.stories[index].mediaType ==
+                            List<StoryModel> stories = getOtherStories(
+                                storyController.stories,
+                                userController.user.id);
+                            StoryModel story = stories[index];
+                            return stories[index].mediaType ==
                                     "text"
                                 ? TextStoryView(
-                                    story:story)
-                                : storyController.stories[index].mediaType ==
-                                        "photo"
+                                    story: story,
+                                    userController: userController,
+                                    storyController: storyController,
+                                  )
+                                : story.mediaType == "photo"
                                     ? PhotoStoryView(
-                                        story: story)
-                                    : VideoStoryView(
-                                        story:story);
+                                        story: story,
+                                        userController: userController,
+                                        storyController: storyController,
+                                      )
+                                    : VideoStoryView(story: story);
                           },
                           scrollDirection: Axis.vertical,
                         ),
                         PageView.builder(
                           itemBuilder: (BuildContext context, int index) {
-                            StoryModel story = storyController.stories[index];
-                            return story.mediaType ==
+                            List<StoryModel> stories = getMyStories(
+                                storyController.stories,
+                                userController.user.id);
+                            StoryModel story = stories[index];
+                            return stories[index].mediaType ==
                                     "text"
                                 ? TextStoryView(
-                                    story: story)
-                                : VideoStoryView(
-                                    story: story);
+                                    story: story,
+                                    userController: userController,
+                                    storyController: storyController,
+                                  )
+                                : story.mediaType == "photo"
+                                    ? PhotoStoryView(
+                                        story: story,
+                                        userController: userController,
+                                        storyController: storyController,
+                                      )
+                                    : VideoStoryView(story: story);
                           },
-                          itemCount: storyController.stories.length,
+                          itemCount: getMyStories(storyController.stories,
+                                  userController.user.id)
+                              .length,
                           scrollDirection: Axis.vertical,
                         ),
                       ],

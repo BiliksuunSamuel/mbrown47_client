@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:glory/data/params/new_story_comment_info.dart';
 import 'package:glory/data/params/new_story_info.dart';
 import 'package:glory/models/story_comment_model.dart';
@@ -22,18 +24,7 @@ Map<String, dynamic> formatStoryUpdateInfo(StoryModel info, String userId) {
   } else {
     likes.add(userId);
   }
-  Map<String, dynamic> data = {
-    "_id": info.id,
-    "userId": info.userId,
-    "message": info.message,
-    "title": info.title,
-    "likes": likes,
-    "comments": info.comments,
-    "shares": info.shares,
-    "dateAdded": info.dateAdded,
-    "media": info.media,
-  };
-  return data;
+  return {"_id": info.id, "likes": likes};
 }
 
 List<StoryModel> formatStories(List<dynamic> data) {
@@ -69,7 +60,6 @@ dynamic prepareStoryCommentLikeInfo(
       } else {
         mod.likes.add(userId);
         data.add(mod);
-
       }
     } else {
       data.add(mod);
@@ -83,4 +73,30 @@ dynamic prepareStoryCommentLikeInfo(
 
 StoryModel getStoryById(List<StoryModel> stories, String id) {
   return stories.where((element) => element.id == id).first;
+}
+
+Map<String, dynamic> formatStoryCommentLikeInfo(
+    String userId, StoryCommentModel model) {
+  return {"userId": userId, "storyId": model.storyId, "commentId": model.id};
+}
+
+List<StoryModel> getMyStories(List<StoryModel> stories, String userId) {
+  List<StoryModel> myStories = [];
+  for (StoryModel story in stories) {
+    if (story.userId == userId) {
+      myStories.add(story);
+    }
+  }
+  return myStories;
+}
+
+List<StoryModel> getOtherStories(List<StoryModel> stories, String userId) {
+  List<StoryModel> otherStories = [];
+
+  for (StoryModel story in stories) {
+    if (story.userId != userId) {
+      otherStories.add(story);
+    }
+  }
+  return otherStories;
 }

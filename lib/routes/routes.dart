@@ -29,4 +29,5 @@ class Routes {
   static const String phoneVerify = "api/phone/verify";
   static const String changePassword = "api/password/change";
   static const String storyReply = "api/story/reply";
+  static const String storyCommentUpdate = "api/story/comment/update";
 }

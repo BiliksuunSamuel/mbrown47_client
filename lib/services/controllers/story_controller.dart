@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:glory/Utils/format_storyInfo.dart';
+import 'package:glory/Utils/utils.dart';
 import 'package:glory/data/params/new_story_comment_info.dart';
 import 'package:glory/data/params/new_story_info.dart';
 import 'package:glory/models/story_model.dart';
@@ -56,10 +57,16 @@ class StoryController extends GetxController {
   }
 
   void updateStoryInfo(Map<String, dynamic> data) async {
-    Response response =
-        await storyRepository.postRequest(Routes.storyUpdate, data);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      stories = response.body;
+    try {
+      Response response =
+          await storyRepository.postRequest(Routes.storyUpdate, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        stories = response.body;
+      }
+    } catch (err) {
+      print(err);
+      error = err.toString();
+      update();
     }
   }
 
@@ -82,6 +89,24 @@ class StoryController extends GetxController {
       }
     } catch (err) {
       error = err.toString();
+      update();
+    }
+  }
+
+  void handleCommentUpdate(dynamic data) async {
+    try {
+      Response response =
+          await storyRepository.postRequest(Routes.storyCommentUpdate, data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        stories = formatStories(response.body);
+        update();
+      } else {
+        error = response.body.toString();
+        update();
+      }
+      update();
+    } catch (e) {
+      error = e.toString();
       update();
     }
   }

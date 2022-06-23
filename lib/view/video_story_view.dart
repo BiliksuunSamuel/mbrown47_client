@@ -109,8 +109,7 @@ class _VideoStoryViewState extends State<VideoStoryView> {
                           Get.to(
                               () => profile(
                                     personalProfile: false,
-                                    profileImageURL: Routes.appBaseUrl +
-                                        getProfileImage(userController.user),
+                                    user: getUserById(userController.users,  story.userId),
                                   ),
                               transition: Transition.circularReveal,
                               fullscreenDialog: true);

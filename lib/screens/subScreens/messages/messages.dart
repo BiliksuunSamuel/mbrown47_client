@@ -145,7 +145,7 @@ class messages extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   onTap: () {
-                    Get.to(() => chat(), transition: Transition.rightToLeft);
+                    Get.to(() => Chat(), transition: Transition.rightToLeft);
                   },
                   minVerticalPadding: 15.0,
                   dense: true,
@@ -187,7 +187,7 @@ class messages extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   onTap: () {
-                    Get.to(() => chat(), transition: Transition.rightToLeft);
+                    Get.to(() =>Chat(), transition: Transition.rightToLeft);
                   },
                   minVerticalPadding: 15.0,
                   dense: true,
@@ -229,7 +229,7 @@ class messages extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                     onTap: () {
-                      Get.to(() => chat(), transition: Transition.rightToLeft);
+                      Get.to(() => Chat(), transition: Transition.rightToLeft);
                     },
                     minVerticalPadding: 15.0,
                     dense: true,

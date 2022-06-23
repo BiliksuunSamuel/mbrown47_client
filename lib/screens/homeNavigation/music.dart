@@ -57,8 +57,7 @@ class music extends StatelessWidget {
             elevation: 0.0,
             leading: _widgets.profileButton(
                 context: context,
-                profileImageURL:
-                    Routes.appBaseUrl + getProfileImage(userController.user),
+                 user: userController.user,
                 personalProfile: true),
             bottom: const PreferredSize(
               preferredSize: Size.fromHeight(2.0),

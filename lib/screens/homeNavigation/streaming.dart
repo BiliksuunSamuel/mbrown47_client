@@ -59,8 +59,7 @@ class streaming extends StatelessWidget {
                 elevation: 0.0,
                 leading: _widgets.profileButton(
                     context: context,
-                    profileImageURL: Routes.appBaseUrl +
-                        getProfileImage(userController.user),
+                     user: userController.user,
                     personalProfile: true),
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(50.0),

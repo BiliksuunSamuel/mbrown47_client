@@ -7,6 +7,7 @@ import 'package:glory/components/response_label.dart';
 import 'package:glory/components/story_comment_view.dart';
 import 'package:glory/models/story_model.dart';
 import 'package:glory/routes/routes.dart';
+import 'package:glory/screens/homeNavigation/story_comments_reader_screen.dart';
 import 'package:glory/screens/subScreens/profile.dart';
 import 'package:glory/screens/views/reply_story_view.dart';
 import 'package:glory/services/controllers/story_controller.dart';
@@ -15,13 +16,18 @@ import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 class PhotoStoryView extends StatelessWidget {
   final StoryModel story;
+  final StoryController storyController;
+  final UserController userController;
   final SolidController solidBottomSheetController = SolidController();
-   PhotoStoryView({Key? key, required this.story}) : super(key: key);
+  PhotoStoryView(
+      {Key? key,
+      required this.story,
+      required this.storyController,
+      required this.userController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(builder: (userController) {
-      return GetBuilder<StoryController>(builder: (storyController) {
         return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -81,10 +87,12 @@ class PhotoStoryView extends StatelessWidget {
                         onTap: () {
                           Get.to(
                               () => profile(
-                                    personalProfile: false,
-                                    profileImageURL: Routes.appBaseUrl +
-                                        getProfileImage(userController.user),
-                                  ),
+                                  personalProfile:
+                                      userController.user.id == story.userId
+                                          ? true
+                                          : false,
+                                  user: getUserById(
+                                      userController.users, story.userId)),
                               transition: Transition.circularReveal,
                               fullscreenDialog: true);
                         },
@@ -98,7 +106,8 @@ class PhotoStoryView extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: NetworkImage(Routes.appBaseUrl +
-                                    getProfileImage(userController.user)),
+                                    getProfileImage(getUserById(
+                                        userController.users, story.userId))),
                               ),
                               borderRadius: BorderRadius.circular(50.0),
                               border:
@@ -111,7 +120,10 @@ class PhotoStoryView extends StatelessWidget {
                         padding: EdgeInsets.only(top: 5.0),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          storyController.updateStoryInfo(formatStoryUpdateInfo(
+                              story, userController.user.id));
+                        },
                         child: SizedBox(
                           height: 70,
                           width: 45,
@@ -119,22 +131,16 @@ class PhotoStoryView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              IconButton(
-                                  onPressed: () {
-                                    storyController.updateStoryInfo(
-                                        formatStoryUpdateInfo(
-                                            story, userController.user.id));
-                                  },
-                                  icon: Icon(
+                              Icon(
+                                story.likes.contains(userController.user.id)
+                                    ? Icons.favorite
+                                    : Icons.favorite_outline,
+                                color:
                                     story.likes.contains(userController.user.id)
-                                        ? Icons.favorite
-                                        : Icons.favorite_outline,
-                                    color: story.likes
-                                            .contains(userController.user.id)
                                         ? Colors.redAccent
                                         : Colors.white,
-                                    size: 30.0,
-                                  )),
+                                size: 30.0,
+                              ),
                               Text(
                                 calculateLikes(story.likes).toString(),
                                 style: const TextStyle(
@@ -150,68 +156,7 @@ class PhotoStoryView extends StatelessWidget {
                         padding: EdgeInsets.only(top: 5.0),
                       ),
                       InkWell(
-                        onTap: () => showModalBottomSheet(
-                            elevation: 1,
-                            shape: Border.all(),
-                            enableDrag: true,
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => SingleChildScrollView(
-                                  child:SolidBottomSheet(
-                                    controller: solidBottomSheetController,
-                                    smoothness: Smoothness.medium,
-                                    showOnAppear: true,
-                                    headerBar: Container(),
-                                    body: SingleChildScrollView(child: 
-                                     Container(
-                                    margin: const EdgeInsets.all(0),
-                                    child: Column(children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text("Story Replies",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                )),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            IconButton(
-                                                onPressed: () => Get.off(() =>
-                                                    ReplyStoryView(
-                                                        story: story)),
-                                                iconSize: 20,
-                                                color: Colors.black87,
-                                                icon: const Icon(
-                                                    Icons.add_comment))
-                                          ],
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                          itemCount: story.comments.length,
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.vertical,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Container(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Column(children: [
-                                                StoryCommentView(
-                                                    comment:
-                                                        story.comments[index])
-                                              ]),
-                                            );
-                                          })
-                                    ]),
-                                  ),)
-                                  )
-                                )),
+                        onTap: ()=>Get.to(()=>StoryCommentReaderScreen(story: story),transition: Transition.fadeIn),
                         child: SizedBox(
                           height: 60,
                           width: 45,
@@ -270,7 +215,5 @@ class PhotoStoryView extends StatelessWidget {
             ],
           ),
         );
-      });
-    });
   }
 }

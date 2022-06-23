@@ -20,11 +20,10 @@ int calculateFollowers(List<dynamic> followers) {
   return total;
 }
 
-int getFollowing(List<dynamic> accounts, dynamic userId) {
+int getFollowing(List<UserModel> accounts, dynamic userId) {
   int total = 0;
-  for (int i = 0; i < accounts.length; i++) {
-    dynamic account = accounts[i];
-    List<dynamic> followers = account["followers"];
+  for(UserModel account in accounts){
+    List<dynamic> followers = account.followers;
     if (followers.contains(userId)) {
       total = total + 1;
     }

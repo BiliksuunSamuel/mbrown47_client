@@ -65,50 +65,36 @@ class StoryCommentView extends StatelessWidget {
               margin: const EdgeInsets.all(0),
               child: Row(
                 children: [
+                  // InkWell(
+                  //   onTap: () {},
+                  //   child: SizedBox(
+                  //       child: Row(children: [
+                  //       const Icon(Icons.comment_outlined,size:18),
+                  //     Text(comment.replies.length.toString(),
+                  //         style: const TextStyle(
+                  //             fontSize: 15, fontWeight: FontWeight.bold))
+                  //   ])),
+                  // ),
+                  // const SizedBox(
+                  //   width: 10,
+                  // ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () => storyController.handleCommentUpdate(
+                        formatStoryCommentLikeInfo(
+                            userController.user.id, comment)),
                     child: SizedBox(
                         child: Row(children: [
-                      IconButton(
-                          color: Colors.grey,
-                          iconSize: 16,
-                          onPressed: () {},
-                          icon: const Icon(Icons.comment)),
-                      Text(comment.replies.length.toString(),
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold))
-                    ])),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  InkWell(
-                    onTap: () => storyController.updateStoryInfo(
-                        prepareStoryCommentLikeInfo(
-                            getStoryById(
-                                storyController.stories, comment.storyId),
-                            userController.user.id,
-                            comment)),
-                    child: SizedBox(
-                        child: Row(children: [
-                      IconButton(
-                          iconSize: 16,
-                          onPressed: () {
-                            storyController.updateStoryInfo(
-                                prepareStoryCommentLikeInfo(
-                                    getStoryById(storyController.stories,
-                                        comment.storyId),
-                                    userController.user.id,
-                                    comment));
-                          },
-                          icon: Icon(
+                       Icon(
+                         
                               comment.likes.contains(userController.user.id)
                                   ? Icons.favorite
                                   : Icons.favorite_outline,
                               color:
                                   comment.likes.contains(userController.user.id)
                                       ? Colors.red
-                                      : Colors.grey)),
+                                      : Colors.grey,
+                          size: 18,
+                        ),
                       Text(comment.likes.length.toString(),
                           style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold))

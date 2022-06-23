@@ -12,6 +12,7 @@ class UserController extends GetxController {
   final localStorage = LocalStorage();
   final UserRepository userRepository;
   late PlatformFile profileFile;
+  late UserModel chatUser;
   late UserModel user = UserModel.fromJson(Data.initialUserInfo);
   late List<UserModel> users = [];
   NewUserInfo info = NewUserInfo();
@@ -26,6 +27,11 @@ class UserController extends GetxController {
 
   UserController({required this.userRepository});
 
+  void handleChatUser(UserModel u) {
+    chatUser = u;
+    update();
+  }
+
   @override
   void onInit() {
     getUsers();
@@ -33,12 +39,11 @@ class UserController extends GetxController {
   }
 
   void handleLogin(dynamic data) async {
+    print("handling the login request");
     error = "";
-    loading = true;
     update();
     Response response = await userRepository.postData(Routes.userLogin, data);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      loading = false;
       localStorage.insertItem("user", response.body);
       user = UserModel.fromJson(response.body);
       update();

@@ -2,13 +2,13 @@ import 'package:get/get.dart';
 
 class ApiClient extends GetConnect implements GetxService {
   final String appBaseUrl;
-  late Map<String, String> header;
+  late Map<String, String>mainHeaders;
 
   ApiClient({required this.appBaseUrl}) {
     baseUrl = appBaseUrl;
-    timeout =const Duration(seconds: 60, hours: 24, minutes: 60);
-    header = {
-      "ContentType": "application/json",
+    timeout = const Duration(seconds: 60, hours: 24, minutes: 60);
+    mainHeaders = {
+      "Content-type": "application/json; charset=UTF-8",
     };
   }
 

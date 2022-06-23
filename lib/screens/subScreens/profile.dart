@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:glory/Utils/cWidgets.dart';
 import 'package:glory/Utils/utils.dart';
+import 'package:glory/models/user_model.dart';
 import 'package:glory/routes/routes.dart';
 import 'package:glory/screens/subScreens/messages/chat.dart';
 import 'package:glory/services/controllers/user_controller.dart';
@@ -11,8 +12,10 @@ class profile extends StatelessWidget {
   final cWidgets _widgets = cWidgets();
   bool personalProfile;
   bool isFollowed = true;
-  final String profileImageURL;
-  profile({Key? key, required this.personalProfile,required this. profileImageURL}) : super(key: key);
+  // final String profileImageURL;
+  final UserModel user;
+  profile({Key? key, required this.personalProfile, required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +24,7 @@ class profile extends StatelessWidget {
             length: 2,
             child: GetBuilder<UserController>(
               builder: (userController) {
+                Get.lazyPut(() => UserController(userRepository: Get.find()));
                 return Scaffold(
                   backgroundColor: Theme.of(context).backgroundColor,
                   extendBodyBehindAppBar: false,
@@ -79,7 +83,7 @@ class profile extends StatelessWidget {
                     ),
                     actions: [
                       _widgets.wheelButton(context: context),
-                      _widgets.cartButton(context: context,cartSize: 0),
+                      _widgets.cartButton(context: context, cartSize: 0),
                     ],
                   ),
                   body: SingleChildScrollView(
@@ -92,15 +96,18 @@ class profile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  Routes.appBaseUrl + getProfileImage(user)),
                               backgroundColor: Colors.white,
                               radius: 40.0,
                               child: ClipOval(
-                                child:
-                                    Image(image: NetworkImage(profileImageURL)),
+                                child: Image(
+                                    image: NetworkImage(Routes.appBaseUrl +
+                                        getProfileImage(user))),
                               )),
                         ),
                         Text(
-                          "@" + userController.user.username,
+                          "@" + user.username,
                           style: Theme.of(context)
                               .textTheme
                               .bodyText1
@@ -111,12 +118,10 @@ class profile extends StatelessWidget {
                             padding: const EdgeInsets.all(20.0),
                             child: _widgets.profilePageStats(
                               context: context,
-                              totalFollowers: calculateFollowers(
-                                      userController.user.followers)
-                                  .toString(),
-                              totalFollowing: getFollowing(userController.users,
-                                      userController.user.id)
-                                  .toString(),
+                              totalFollowers: user.followers.length.toString(),
+                              totalFollowing:
+                                  getFollowing(userController.users, user.id)
+                                      .toString(),
                               // totalLikes: "91",
                               onTapFollowers: () {},
                               onTapFollowing: () {},
@@ -203,14 +208,27 @@ class profile extends StatelessWidget {
                                       crossAxisSpacing: 2.0,
                                       childAspectRatio: 9 / 16,
                                     ),
-                                    itemCount: 20,
+                                    itemCount: user.followers.length,
                                     shrinkWrap: true,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      return Image.asset(
-                                        'assets/images/sample_image.png',
-                                        fit: BoxFit.cover,
-                                      );
+                                      return CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              Routes.appBaseUrl +
+                                                  getProfileImage(getUserById(
+                                                      userController.users,
+                                                      user.followers[index]))),
+                                          backgroundColor: Colors.white,
+                                          radius: 40.0,
+                                          child: ClipOval(
+                                            child: Image(
+                                                image: NetworkImage(Routes
+                                                        .appBaseUrl +
+                                                    getProfileImage(getUserById(
+                                                        userController.users,
+                                                        user.followers[
+                                                            index])))),
+                                          ));
                                     }),
                                 GridView.builder(
                                     physics: const BouncingScrollPhysics(),
@@ -221,13 +239,26 @@ class profile extends StatelessWidget {
                                       crossAxisSpacing: 2.0,
                                       childAspectRatio: 9 / 16,
                                     ),
-                                    itemCount: 5,
+                                    itemCount: user.followers.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      return Image.asset(
-                                        'assets/images/sample_image.png',
-                                        fit: BoxFit.cover,
-                                      );
+                                      return CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              Routes.appBaseUrl +
+                                                  getProfileImage(getUserById(
+                                                      userController.users,
+                                                      user.followers[index]))),
+                                          backgroundColor: Colors.white,
+                                          radius: 40.0,
+                                          child: ClipOval(
+                                            child: Image(
+                                                image: NetworkImage(Routes
+                                                        .appBaseUrl +
+                                                    getProfileImage(getUserById(
+                                                        userController.users,
+                                                        user.followers[
+                                                            index])))),
+                                          ));
                                     }),
                               ]),
                         ),
@@ -239,6 +270,7 @@ class profile extends StatelessWidget {
             ),
           )
         : GetBuilder<UserController>(builder: (userController) {
+            Get.lazyPut(() => UserController(userRepository: Get.find()));
             return Scaffold(
               backgroundColor: Theme.of(context).backgroundColor,
               extendBodyBehindAppBar: false,
@@ -263,7 +295,7 @@ class profile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            userController.user.username,
+                            user.username,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
@@ -294,7 +326,7 @@ class profile extends StatelessWidget {
                 ),
                 actions: [
                   _widgets.wheelButton(context: context),
-                  _widgets.cartButton(context: context,cartSize: 0),
+                  _widgets.cartButton(context: context, cartSize: 0),
                 ],
               ),
               body: SingleChildScrollView(
@@ -307,6 +339,8 @@ class profile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              Routes.appBaseUrl + getProfileImage(user)),
                           backgroundColor: Colors.white,
                           radius: 40.0,
                           child: ClipOval(
@@ -314,12 +348,12 @@ class profile extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Image(
                                   image: NetworkImage(Routes.appBaseUrl +
-                                      userController.user.profileImage),
+                                      getProfileImage(user)),
                                 )),
                           )),
                     ),
                     Text(
-                      "@" + userController.user.username,
+                      "@" + user.username,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(
                           fontWeight: FontWeight.bold, fontSize: 14.0),
                     ),
@@ -327,12 +361,10 @@ class profile extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         child: _widgets.profilePageStats(
                           context: context,
-                          totalFollowers:
-                              calculateFollowers(userController.user.followers)
+                          totalFollowers: user.followers.length.toString(),
+                          totalFollowing:
+                              getFollowing(userController.users, user.id)
                                   .toString(),
-                          totalFollowing: getFollowing(
-                                  userController.users, userController.user.id)
-                              .toString(),
                           // totalLikes: "91",
                           onTapFollowers: () {},
                           onTapFollowing: () {},
@@ -342,10 +374,11 @@ class profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         OutlinedButton(
-                            onPressed: () => isFollowed
-                                ? Get.to(() => chat(),
-                                    transition: Transition.size)
-                                : () {},
+                            onPressed:() {
+                                    userController.handleChatUser(user);
+                                    Get.to(() => Chat(),
+                                        transition: Transition.size);
+                                  },
                             child: isFollowed
                                 ? const Text(
                                     "Message",
@@ -388,13 +421,19 @@ class profile extends StatelessWidget {
                             crossAxisSpacing: 2.0,
                             childAspectRatio: 9 / 16,
                           ),
-                          itemCount: 20,
+                          itemCount: user.followers.length,
                           shrinkWrap: true,
                           itemBuilder: (BuildContext context, int index) {
-                            return Image.asset(
-                              'assets/images/sample_image.png',
-                              fit: BoxFit.cover,
-                            );
+                            return CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    Routes.appBaseUrl + getProfileImage(user)),
+                                backgroundColor: Colors.white,
+                                radius: 40.0,
+                                child: ClipOval(
+                                  child: Image(
+                                      image: NetworkImage(Routes.appBaseUrl +
+                                          getProfileImage(user))),
+                                ));
                           }),
                     ),
                   ],

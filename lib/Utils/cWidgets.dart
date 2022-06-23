@@ -1,6 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:glory/Utils/utils.dart';
+import 'package:glory/models/user_model.dart';
+import 'package:glory/routes/routes.dart';
 import 'package:glory/screens/subScreens/cart.dart';
 import 'package:glory/screens/subScreens/profile.dart';
 import 'package:glory/screens/subScreens/search.dart';
@@ -10,6 +13,7 @@ import 'package:glory/screens/views/upload_event.dart';
 import 'package:glory/screens/views/upload_movie.dart';
 import 'package:glory/screens/views/upload_song.dart';
 import 'package:glory/screens/views/upload_story.dart';
+import 'package:glory/services/controllers/user_controller.dart';
 
 class cWidgets {
   Widget profilePageStats({
@@ -205,7 +209,7 @@ class cWidgets {
 
   Widget profileButton(
       {required BuildContext context,
-      required String profileImageURL,
+      required UserModel user,
       required bool personalProfile}) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -214,13 +218,13 @@ class cWidgets {
           Get.to(
               () => profile(
                   personalProfile: personalProfile,
-                  profileImageURL: profileImageURL),
+                  user: user),
               transition: Transition.leftToRight);
         },
         splashColor: Theme.of(context).primaryColor,
         radius: 15.0,
         child: CircleAvatar(
-          foregroundImage: NetworkImage(profileImageURL),
+          foregroundImage: NetworkImage(Routes.appBaseUrl+getProfileImage(user)),
         ),
       ),
     );
